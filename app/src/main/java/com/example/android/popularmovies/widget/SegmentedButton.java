@@ -4,12 +4,15 @@
 
 package com.example.android.popularmovies.widget;
 
+import com.example.android.popularmovies.MainActivity;
 import com.example.android.popularmovies.R;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.StateListDrawable;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
@@ -39,6 +42,7 @@ public class SegmentedButton extends LinearLayout {
     private int mSelectedButtonIndex = 0;
     
     private List<String> mButtonTitles = new ArrayList<String>();
+
     private int mColorOnStart;
     private int mColorOnEnd;
     private int mColorOffStart;
@@ -49,6 +53,8 @@ public class SegmentedButton extends LinearLayout {
     private int mStrokeWidth;
     private int mCornerRadius;
     private int mTextStyle;
+    private int mTextColorOff = R.color.colorTextOffSegmentedButton;
+    private int mTextColorSelected = R.color.colorTextSelectedSegmentedButton;
     private int mBtnPaddingTop;
     private int mBtnPaddingBottom;
     
@@ -82,6 +88,8 @@ public class SegmentedButton extends LinearLayout {
         mStrokeWidth = a.getDimensionPixelSize(R.styleable.SegmentedButton_strokeWidth, 1);
         mCornerRadius = a.getDimensionPixelSize(R.styleable.SegmentedButton_cornerRadius, 4);
         mTextStyle = a.getResourceId(R.styleable.SegmentedButton_textStyle, -1);
+        mTextColorOff = a.getResourceId(R.styleable.SegmentedButton_textColorOff, 0xFF0000);
+        mTextColorSelected = a.getResourceId(R.styleable.SegmentedButton_textColorSelected, 0xFF0000);
         mBtnPaddingTop = a.getDimensionPixelSize(R.styleable.SegmentedButton_btnPaddingTop, 0);
         mBtnPaddingBottom = a.getDimensionPixelSize(R.styleable.SegmentedButton_btnPaddingBottom, 0);
         
@@ -153,7 +161,7 @@ public class SegmentedButton extends LinearLayout {
                                 int colorSelectedEnd,
                                 float crad,
                                 int strokeColor,
-                                int strokeWidth) 
+                                int strokeWidth)
     {
         // top-left, top-right, bottom-right, bottom-left
         float[] radiiLeft = new float[] {
@@ -296,7 +304,10 @@ public class SegmentedButton extends LinearLayout {
         
         btnLast.setPadding(0, mBtnPaddingTop, 0, mBtnPaddingBottom);
         btnNext.setPadding(0, mBtnPaddingTop, 0, mBtnPaddingBottom);
-        
+
+        btnLast.setTextColor(getResources().getColor(mTextColorOff));
+        btnNext.setTextColor(getResources().getColor(mTextColorSelected));
+
         mSelectedButtonIndex = btnNextIndex;
     }
     
@@ -315,4 +326,5 @@ public class SegmentedButton extends LinearLayout {
     public interface OnClickListenerSegmentedButton {
         public void onClick(int index);
     }
+
 }
