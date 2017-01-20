@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="true"
+        jar="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\exploded-aar\com.android.support\support-media-compat\25.1.0\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="f02263e35e52668dd17b73bf961437e3d562b35f">
+        <dex dex="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-media-compat-25.1.0_95601d64be1aa8e4a73435a2ded5b040d1032284\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\exploded-aar\com.android.support\support-v4\25.1.0\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="d7c42c80f6509b9ea4db28ca7859ffae08ec5741">
+        <dex dex="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-v4-25.1.0_83fade193cad786c466e51820f749e20fd3b9b79\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\exploded-aar\com.android.support\support-compat\25.1.0\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="ca3c7aa31e2726a400a6e552b93cb9f63c9a1e6d">
+        <dex dex="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-compat-25.1.0_e1c1faf6a8a47409444ccc3cbbb089cce67561be\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\thiba\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\25.1.0\support-annotations-25.1.0.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="64cb6b229a8bdfd907bc8dd46839a0053e4c018d">
+        <dex dex="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\support-annotations-25.1.0_d6292baeee66b3c01fdc8a5a20278c077ef86d62\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\exploded-aar\com.android.support\support-vector-drawable\25.1.0\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="e79aa3d9a16f8c9f16377c0608de70a8f31e5d80">
+        <dex dex="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-vector-drawable-25.1.0_d2d8c90ffdb17f464e6f171093fbb823016c4524\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\exploded-aar\com.android.support\support-fragment\25.1.0\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="2a53c4f3518116b8c6aee0e477233f0f7da8616f">
+        <dex dex="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-fragment-25.1.0_fe909e8d45138209439d5e12ed99acdc3c61a2d1\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\exploded-aar\com.android.support\support-core-utils\25.1.0\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="0a0ef86b7fa568a52bf6214a0326ca1f1d618da7">
+        <dex dex="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-core-utils-25.1.0_1927c9837d59bbe2f56365ebf4e754fe47c6d74c\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\25.1.0\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="1630658fbc2d222b988603c27b4a4249586fbfe7">
+        <dex dex="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-appcompat-v7-25.1.0_5a5df17118bef4855faecca70cdf7605f8ddc925\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\incremental-runtime-classes\debug\instant-run.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="50c8809ad2b034872f7ccf86b70fa433494cab4f">
+        <dex dex="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run_8bddef3d10e18a63224594eafd585df80f890319\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="6c82d627d47f2d745370d516debbdc78855c16f7">
+        <dex dex="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run-bootstrap_44505a325662db7c6d1ff6902e812a13c91477c8\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\thiba\.gradle\caches\modules-2\files-2.1\com.squareup.picasso\picasso\2.5.2\7446d06ec8d4f7ffcc53f1da37c95f200dcb9387\picasso-2.5.2.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="7446d06ec8d4f7ffcc53f1da37c95f200dcb9387">
+        <dex dex="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\picasso-2.5.2_bd6a94b6daed5681e09f27c08861e691a482357c\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\exploded-aar\com.android.support\support-core-ui\25.1.0\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="aee64634871d88a419d59eb743c1258a60f19700">
+        <dex dex="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-core-ui-25.1.0_55d781ec11e19b87e43db1181c79b8364cdb968d\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\exploded-aar\com.android.support\animated-vector-drawable\25.1.0\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="6fb6ac3e8d3b9013819920d9ea11f3803c4c0033">
+        <dex dex="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-animated-vector-drawable-25.1.0_9db0e7016e4ff85f9596b4c017a19c7dfbac6411\classes.dex" />
+    </item>
+
+</items>
