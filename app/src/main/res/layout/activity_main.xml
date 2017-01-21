@@ -8,39 +8,71 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="com.example.android.popularmovies.MainActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/main_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary">
+        android:layout_height="@dimen/mainActionBarHeight"
+        android:background="@color/colorPrimary"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
-                
-            <TextView
-                android:layout_width="wrap_content"
+
+            <GridLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/app_name"
-                android:textColor="@color/colorMainToolbarText"
-                android:textSize="20sp"
-                android:layout_gravity="center"
-                android:id="@+id/toolbar_title"
-                android:padding="16dp"/>
+                android:columnWidth="90dp"
+                android:columnCount="3"
+                android:verticalSpacing="10dp"
+                android:horizontalSpacing="10dp"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/iv_refresh_menu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="left"
+                    android:src="@drawable/reload2"
+                    android:maxWidth="10dp"
+                    android:maxHeight="10dp"
+                    android:padding="16dp"
+                    android:layout_columnWeight="1"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:text="@string/app_name"
+                    android:textColor="@color/colorMainToolbarText"
+                    android:textSize="20sp"
+                    android:layout_gravity="center"
+                    android:id="@+id/toolbar_title"
+                    android:paddingTop="16dp"
+                    android:paddingBottom="10dp"/>
+                <ImageView
+                    android:id="@+id/iv_settings_menu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="right"
+                    android:src="@drawable/settings2"
+                    android:maxWidth="10dp"
+                    android:maxHeight="10dp"
+                    android:padding="16dp"
+                    android:layout_columnWeight="1"/>
+            </GridLayout>
 
             <com.example.android.popularmovies.widget.SegmentedButton
                 android:id="@+id/segmented"
                 android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingRight="80dp"
-                android:paddingEnd="80dp"
                 android:paddingLeft="70dp"
-                android:paddingStart="70dp"
+                android:paddingRight="70dp"
                 android:paddingBottom="16dp"
                 segmentedbutton:gradientColorOnStart="@color/colorPrimary"
                 segmentedbutton:gradientColorOnEnd="@color/colorPrimary"

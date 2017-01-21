@@ -5,7 +5,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 /**
  * Created by Thibaut on 20/01/2017.
@@ -42,11 +45,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
      * Cache of the children views for a movie list item.
      */
     public class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public final TextView mMovieTextView;
+        public final ImageView mMovieImageView;
 
         public MovieAdapterViewHolder(View view) {
             super(view);
-            mMovieTextView = (TextView) view.findViewById(R.id.tv_movie_data);
+            mMovieImageView = (ImageView) view.findViewById(R.id.iv_movie_data);
             view.setOnClickListener(this);
         }
 
@@ -87,18 +90,20 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
     /**
      * OnBindViewHolder is called by the RecyclerView to display the data at the specified
-     * position. In this method, we update the contents of the ViewHolder to display the weather
+     * position. In this method, we update the contents of the ViewHolder to display the movie
      * details for this particular position, using the "position" argument that is conveniently
      * passed into us.
      *
-     * @param movieAdapterViewHolder The ViewHolder which should be updated to represent the
+     * @param movieAdapterViewHolder    The ViewHolder which should be updated to represent the
      *                                  contents of the item at the given position in the data set.
      * @param position                  The position of the item within the adapter's data set.
      */
     @Override
     public void onBindViewHolder(MovieAdapterViewHolder movieAdapterViewHolder, int position) {
         String oneMovie = mMoviesData[position];
-        movieAdapterViewHolder.mMovieTextView.setText(oneMovie);
+        //movieAdapterViewHolder.mMovieImageView.setText(oneMovie);
+        Context context = movieAdapterViewHolder.mMovieImageView.getContext();
+        Picasso.with(context).load(oneMovie).into(movieAdapterViewHolder.mMovieImageView);
     }
 
     /**

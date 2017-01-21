@@ -2,12 +2,15 @@ package com.example.android.popularmovies.utilities;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.net.Uri;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * Created by thiba on 20/01/2017.
@@ -122,6 +125,10 @@ public class TheMovieDBJsonUtils {
 
         final String TMDB_STATUS_CODE = "status_code";
 
+        final String TMDB_BASE_URL_POSTER = "http://image.tmdb.org/t/p/";
+
+        final String TMDB_POSTER_SIZE = "w500";
+
         /* String array to hold each movie poster String */
         String[] parsedMovieData = null;
 
@@ -150,13 +157,30 @@ public class TheMovieDBJsonUtils {
         for (int i = 0; i < movieArray.length(); i++) {
 
             String moviePoster;
+            URL url = null;
 
             /* Get the JSON object representing one movie */
             JSONObject oneMovie = movieArray.getJSONObject(i);
 
             moviePoster = oneMovie.getString(TMDB_POSTER_PATH);
 
-            parsedMovieData[i] = moviePoster;
+            /**
+             * Remove the first letter from the moviePoser string : the character "/" which is not useful
+             */
+            moviePoster = moviePoster.substring(1);
+
+            Uri builtUri = Uri.parse(TMDB_BASE_URL_POSTER).buildUpon()
+                    .appendPath(TMDB_POSTER_SIZE)
+                    .appendPath(moviePoster)
+                    .build();
+
+            try {
+                url = new URL(builtUri.toString());
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+
+            parsedMovieData[i] = url.toString();
         }
 
         return parsedMovieData;

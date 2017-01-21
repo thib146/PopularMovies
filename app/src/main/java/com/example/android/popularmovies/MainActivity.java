@@ -3,12 +3,16 @@ package com.example.android.popularmovies;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -59,13 +63,38 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
                     sortQuery = "popular";
                     mMovieAdapter.setMovieData(null);
                     loadMovieData();
-                    Toast.makeText(MainActivity.this, "Sort by Most Popular", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(MainActivity.this, "Sort by Most Popular", Toast.LENGTH_SHORT).show();
                 } else {
                     sortQuery = "top_rated";
                     mMovieAdapter.setMovieData(null);
                     loadMovieData();
-                    Toast.makeText(MainActivity.this, "Sort by Top Rated", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(MainActivity.this, "Sort by Top Rated", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        /**
+         * Management of menu buttons
+         */
+        // REFRESH BUTTON
+        ImageView reload = (ImageView) findViewById(R.id.iv_refresh_menu);
+        reload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mMovieAdapter.setMovieData(null);
+                loadMovieData();
+            }
+        });
+        // SETTINGS BUTTON
+        ImageView settings = (ImageView) findViewById(R.id.iv_settings_menu);
+        settings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Context context = this;
+                //Class destinationClass = DetailActivity.class;
+                //Intent intentToStartSettingsActivity = new Intent(context, destinationClass);
+                //intentToStartSettingsActivity.putExtra(Intent.EXTRA_TEXT, weatherForDay);
+                //startActivity(intentToStartSettingsActivity);
             }
         });
 
@@ -83,8 +112,11 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
          * parameter is useful mostly for HORIZONTAL layouts that should reverse for right to left
          * languages.
          */
-        LinearLayoutManager layoutManager
-                = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+//        LinearLayoutManager layoutManager
+//                = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+
+        GridLayoutManager layoutManager
+                = new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false);
 
         //GridLayoutManager layoutManager
         //        = new GridLayoutManager(this, GridLayoutManager.DEFAULT_SPAN_COUNT, GridLayoutManager.VERTICAL, false);
@@ -118,6 +150,12 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         /* Once all of our views are setup, we can load the weather data. */
         loadMovieData();
     }
+
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.main, menu);
+//        return true;
+//    }
 
     /**
      * This method will get the user's preferred location for weather, and then tell some

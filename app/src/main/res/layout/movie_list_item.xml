@@ -1,34 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--<GridLayout-->
-    <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--android:orientation="vertical"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:columnWidth="90dp"-->
-    <!--android:numColumns="auto_fit"-->
-    <!--android:verticalSpacing="10dp"-->
-    <!--android:horizontalSpacing="10dp"-->
-    <!--android:stretchMode="columnWidth"-->
-    <!--android:gravity="center"></GridLayout>-->
-
-<LinearLayout
+<GridLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:columnWidth="90dp"
+    android:numColumns="auto_fit"
+    android:verticalSpacing="10dp"
+    android:horizontalSpacing="10dp"
+    android:gravity="center">
+    <!--android:stretchMode="spacingWidthUniform"-->
 
-    <TextView
-        android:id="@+id/tv_movie_data"
+
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp"/>
+        android:layout_height="wrap_content">
 
-    <!--This View serves as a visual divider between list items-->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#dadada"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp" />
+        <ImageView
+            android:id="@+id/iv_movie_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="2dp"
+            android:layout_gravity="center"/>
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/tv_movie_title_main"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="2dp"
+            android:layout_gravity="center"
+            android:text="#TITLE"/>
+
+        <!-- This View serves as a visual divider between list items -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#dadada"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp" />
+
+    </LinearLayout>
+</GridLayout>
