@@ -86,15 +86,15 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
             }
         });
         // SETTINGS BUTTON
-        ImageView settings = (ImageView) findViewById(R.id.iv_settings_menu);
+        final ImageView settings = (ImageView) findViewById(R.id.iv_settings_menu);
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Context context = this;
                 //Class destinationClass = DetailActivity.class;
-                //Intent intentToStartSettingsActivity = new Intent(context, destinationClass);
+                Intent intentToStartSettingsActivity = new Intent(MainActivity.this, MainSettings.class);
                 //intentToStartSettingsActivity.putExtra(Intent.EXTRA_TEXT, weatherForDay);
-                //startActivity(intentToStartSettingsActivity);
+                startActivity(intentToStartSettingsActivity);
             }
         });
 
@@ -175,11 +175,11 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
      */
     @Override
     public void onClick(String movieDetails) {
-//        Context context = this;
-//        Class destinationClass = DetailActivity.class;
-//        Intent intentToStartDetailActivity = new Intent(context, destinationClass);
-//        intentToStartDetailActivity.putExtra(Intent.EXTRA_TEXT, weatherForDay);
-//        startActivity(intentToStartDetailActivity);
+        Intent intentToStartMovieDetailActivity = new Intent(this, MovieDetails.class);
+
+        intentToStartMovieDetailActivity.putExtra(Intent.EXTRA_TEXT, movieDetails);
+
+        startActivity(intentToStartMovieDetailActivity);
     }
 
     /**
@@ -210,7 +210,19 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
     }
 
-    public class FetchMovieTask extends AsyncTask<String, Void, String[]> {
+    public class Movie {
+        public String[] posterPath;
+        public String[] description;
+        public String[] releaseDate;
+        public String[] id;
+        public String[] title;
+        public String[] originalTitle;
+        public String[] popularity;
+        public String[] voteCount;
+        public String[] voteAverage;
+    }
+
+    public class FetchMovieTask extends AsyncTask<String, Void, Movie> {
 
         @Override
         protected void onPreExecute() {
@@ -218,15 +230,13 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
             mLoadingIndicator.setVisibility(View.VISIBLE);
         }
 
-        @Override
-        protected String[] doInBackground(String... params) {
+        protected Movie doInBackground(String... params) {
 
             /* If there's no data, there's nothing to look up. */
             if (params.length == 0) {
                 return null;
             }
 
-            //sortQuery = params[0];
             URL movieRequestUrl = NetworkUtils.buildUrl(sortQuery);
 
             try {
@@ -236,7 +246,17 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
                 String[] JsonMoviePosters = TheMovieDBJsonUtils
                         .getMoviePosterFromJson(MainActivity.this, jsonMovieResponse);
 
-                return JsonMoviePosters;
+                TheMovieDBJsonUtils.Movie JsonMovieData = TheMovieDBJsonUtils
+                        .getMovieTitleFromJson(MainActivity.this, jsonMovieResponse);
+
+                Movie movie = new Movie();
+
+                movie.posterPath = JsonMoviePosters;
+                movie.title = JsonMovieData.title;
+                movie.id = JsonMovieData.id;
+
+                return movie;
+                //return JsonMoviePosters;
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -245,7 +265,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         }
 
         @Override
-        protected void onPostExecute(String[] movieData) {
+        protected void onPostExecute(Movie movieData) {
             mLoadingIndicator.setVisibility(View.INVISIBLE);
             if (movieData != null) {
                 showMovieDataView();

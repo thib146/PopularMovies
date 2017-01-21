@@ -16,7 +16,7 @@ import com.squareup.picasso.Picasso;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder> {
 
-    private String[] mMoviesData;
+    private MainActivity.Movie mMoviesData;
 
     /*
      * An on-click handler that we've defined to make it easy for an Activity to interface with
@@ -46,10 +46,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
      */
     public class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public final ImageView mMovieImageView;
+        public final TextView mMovieTitleTextView;
 
         public MovieAdapterViewHolder(View view) {
             super(view);
             mMovieImageView = (ImageView) view.findViewById(R.id.iv_movie_data);
+            mMovieTitleTextView = (TextView) view.findViewById(R.id.tv_movie_title_main);
             view.setOnClickListener(this);
         }
 
@@ -61,7 +63,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         @Override
         public void onClick(View v) {
             int adapterPosition = getAdapterPosition();
-            String movieDetails = mMoviesData[adapterPosition];
+            String movieDetails = mMoviesData.posterPath[adapterPosition];
             mClickHandler.onClick(movieDetails);
         }
     }
@@ -100,10 +102,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
      */
     @Override
     public void onBindViewHolder(MovieAdapterViewHolder movieAdapterViewHolder, int position) {
-        String oneMovie = mMoviesData[position];
-        //movieAdapterViewHolder.mMovieImageView.setText(oneMovie);
+        String oneMoviePosters = mMoviesData.posterPath[position];
+        String oneMovieTitles = mMoviesData.title[position];
         Context context = movieAdapterViewHolder.mMovieImageView.getContext();
-        Picasso.with(context).load(oneMovie).into(movieAdapterViewHolder.mMovieImageView);
+        Picasso.with(context).load(oneMoviePosters).into(movieAdapterViewHolder.mMovieImageView);
+        movieAdapterViewHolder.mMovieTitleTextView.setText(oneMovieTitles);
     }
 
     /**
@@ -115,7 +118,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     @Override
     public int getItemCount() {
         if (null == mMoviesData) return 0;
-        return mMoviesData.length;
+        return mMoviesData.posterPath.length;
     }
 
     /**
@@ -125,7 +128,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
      *
      * @param moviesData The new weather data to be displayed.
      */
-    public void setMovieData(String[] moviesData) {
+    public void setMovieData(MainActivity.Movie moviesData) {
         mMoviesData = moviesData;
         notifyDataSetChanged();
     }

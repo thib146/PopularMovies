@@ -68,6 +68,30 @@ public final class NetworkUtils {
     }
 
     /**
+     * Builds the URL used to talk to the movieDB server int the detailed activity, once we have a movie ID
+     *
+     * @param id The id of a movie, once it's clicked
+     * @return The URL to use to query the movieDB server.
+     */
+    public static URL buildUrlDetail(String id) {
+        Uri builtUri = Uri.parse(THEMOVIEDB_BASE_URL).buildUpon()
+                .appendPath(id)
+                .appendQueryParameter(API_KEY_PARAM, API_KEY)
+                .build();
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        Log.v(TAG, "Built URI " + url);
+
+        return url;
+    }
+
+    /**
      * This method returns the entire result from the HTTP response.
      *
      * @param url The URL to fetch the HTTP response from.

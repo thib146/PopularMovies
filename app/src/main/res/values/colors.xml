@@ -6,4 +6,5 @@
     <color name="colorAccent">#FF4081</color>
     <color name="colorTextOffSegmentedButton">#000000</color>
     <color name="colorTextSelectedSegmentedButton">#FFFFFF</color>
+    <color name="textItemsSettings">#000000</color>
 </resources>
