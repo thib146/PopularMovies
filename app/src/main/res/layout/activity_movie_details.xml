@@ -76,6 +76,8 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <ImageView
+            android:id="@+id/iv_movie_poster_detail"
+            android:contentDescription="test"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxWidth="120dp"
@@ -100,7 +102,7 @@
                     android:id="@+id/tv_by_details"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="By: sjdfkjfskj"
+                    android:text="By: "
                     android:textSize="15sp"
                     android:paddingTop="10dp"/>
                 <ProgressBar
@@ -114,13 +116,12 @@
                 android:id="@+id/tv_with_details"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="With: sjdfkjfskj"
+                android:text="With:"
                 android:textSize="15sp"/>
             <TextView
                 android:id="@+id/tv_date_details"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Release date: 06/21/1978"
                 android:textSize="15sp"/>
         </LinearLayout>
 
@@ -130,7 +131,6 @@
         android:id="@+id/tv_description_details"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Synopsis : sdkljsfjsfljd dsjskdflkjd f fsdfjlkjd fdfj fkjdfj fdlkfjdfjdkf jdfkjf dklfdfj fdkjd jfdd fdjfdklj fd fjdkljdklf d djf dkfj ."
         android:textSize="17sp"
         android:padding="16sp"/>
 
@@ -138,7 +138,6 @@
         android:id="@+id/tv_ratings_details"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Ratings : 4,7"
         android:textSize="17sp"
         android:padding="16sp"/>
 

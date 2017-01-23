@@ -169,7 +169,7 @@
         jumboMode="true"
         optimize="true"
         revision="25.0.2"
-        sha1="8c02966c24bd4aa345ef07353e4188dfa6a6b237">
+        sha1="4def7c0ac5a4d8b53c001ce297375595f8847be8">
         <dex dex="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run_8bddef3d10e18a63224594eafd585df80f890319\classes.dex" />
     </item>
     <item
@@ -178,7 +178,7 @@
         jumboMode="true"
         optimize="true"
         revision="25.0.2"
-        sha1="a203d7d758644889f3b464ae77949a69866e9587">
+        sha1="2e9a82233c0e2ae8bb2c6cc44ead3315cabd36ee">
         <dex dex="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run-bootstrap_44505a325662db7c6d1ff6902e812a13c91477c8\classes.dex" />
     </item>
     <item

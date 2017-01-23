@@ -37,6 +37,10 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
 
     private String sortQuery = "popular";
 
+    private String[] mMovieId;
+
+    private String mPosterVersion = "w500";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -171,13 +175,16 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
      * This method is overridden by our MainActivity class in order to handle RecyclerView item
      * clicks.
      *
-     * @param movieDetails The movie that was clicked
+     * @param movieID The view that was clicked
      */
     @Override
-    public void onClick(String movieDetails) {
+    public void onClick(String movieID) {
+        int adapterPosition = mMovieAdapter.adapterPosition;
+        String movieId = mMovieId[adapterPosition];
+
         Intent intentToStartMovieDetailActivity = new Intent(this, MovieDetails.class);
 
-        intentToStartMovieDetailActivity.putExtra(Intent.EXTRA_TEXT, movieDetails);
+        intentToStartMovieDetailActivity.putExtra(Intent.EXTRA_TEXT, movieId);
 
         startActivity(intentToStartMovieDetailActivity);
     }
@@ -243,17 +250,19 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
                 String jsonMovieResponse = NetworkUtils
                         .getResponseFromHttpUrl(movieRequestUrl);
 
-                String[] JsonMoviePosters = TheMovieDBJsonUtils
-                        .getMoviePosterFromJson(MainActivity.this, jsonMovieResponse);
+                //String[] JsonMoviePosters = TheMovieDBJsonUtils
+                //        .getMoviePosterFromJson(MainActivity.this, jsonMovieResponse);
 
                 TheMovieDBJsonUtils.Movie JsonMovieData = TheMovieDBJsonUtils
-                        .getMovieTitleFromJson(MainActivity.this, jsonMovieResponse);
+                        .getMovieTitleFromJson(MainActivity.this, jsonMovieResponse, mPosterVersion);
 
                 Movie movie = new Movie();
 
-                movie.posterPath = JsonMoviePosters;
+                movie.posterPath = JsonMovieData.posterPath;
                 movie.title = JsonMovieData.title;
                 movie.id = JsonMovieData.id;
+
+                mMovieId = movie.id;
 
                 return movie;
                 //return JsonMoviePosters;

@@ -17,6 +17,7 @@ import com.squareup.picasso.Picasso;
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder> {
 
     private MainActivity.Movie mMoviesData;
+    public int adapterPosition;
 
     /*
      * An on-click handler that we've defined to make it easy for an Activity to interface with
@@ -62,7 +63,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
          */
         @Override
         public void onClick(View v) {
-            int adapterPosition = getAdapterPosition();
+            adapterPosition = getAdapterPosition();
             String movieDetails = mMoviesData.posterPath[adapterPosition];
             mClickHandler.onClick(movieDetails);
         }
