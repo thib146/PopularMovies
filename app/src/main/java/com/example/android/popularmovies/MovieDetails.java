@@ -2,10 +2,10 @@ package com.example.android.popularmovies;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -15,8 +15,6 @@ import android.widget.TextView;
 import com.example.android.popularmovies.utilities.NetworkUtils;
 import com.example.android.popularmovies.utilities.TheMovieDBJsonUtils;
 import com.squareup.picasso.Picasso;
-
-import org.w3c.dom.Text;
 
 import java.net.URL;
 
@@ -53,11 +51,13 @@ public class MovieDetails extends AppCompatActivity {
          * Management of menu buttons
          */
         // BACK BUTTON
+        // TODO : Update the code so that after clicking the back-button, the Main Activity is displayed as it was left
         final ImageView back = (ImageView) findViewById(R.id.iv_back_movie_details);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intentToStartMainActivity = new Intent(MovieDetails.this, MainActivity.class);
+                startActivity(intentToStartMainActivity);
             }
         });
 
@@ -135,9 +135,6 @@ public class MovieDetails extends AppCompatActivity {
                 String jsonMovieResponse = NetworkUtils
                         .getResponseFromHttpUrl(movieRequestUrl);
 
-                //String[] JsonMoviePosters = TheMovieDBJsonUtils
-                //        .getMoviePosterFromJson(MovieDetails.this, jsonMovieResponse);
-
                 TheMovieDBJsonUtils.Movie JsonMovieData = TheMovieDBJsonUtils
                         .getMovieTitleFromJson(MovieDetails.this, jsonMovieResponse, mPosterVersion);
 
@@ -169,13 +166,16 @@ public class MovieDetails extends AppCompatActivity {
             mLoadingIndicator.setVisibility(View.INVISIBLE);
             if (movieData != null) {
                 showMovieDataView();
+
+                Resources resources = getResources();
                 Context context = mMoviePoster.getContext();
+
                 Picasso.with(context).load(movieData.posterPath).into(mMoviePoster);
+
                 mMovieTitle.setText(movieData.title);
-                mReleaseDate.setText("Release date: " + movieData.releaseDate);
-                mMovieDescription.setText("Synopsis: " + movieData.description);
-                mMovieRatings.setText("Ratings : " + movieData.voteAverage);
-                //mMovieTitle.setText("Test");
+                mReleaseDate.setText(String.format(resources.getString(R.string.movie_release_date), movieData.releaseDate));
+                mMovieDescription.setText(String.format(resources.getString(R.string.movie_description), movieData.description));
+                mMovieRatings.setText(String.format(resources.getString(R.string.movie_ratings), movieData.voteAverage));
             } else {
                 showErrorMessage();
             }

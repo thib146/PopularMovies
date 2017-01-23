@@ -1,21 +1,16 @@
 package com.example.android.popularmovies;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.android.popularmovies.MovieAdapter.MovieAdapterOnClickHandler;
 import com.example.android.popularmovies.utilities.NetworkUtils;
@@ -94,10 +89,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Context context = this;
-                //Class destinationClass = DetailActivity.class;
                 Intent intentToStartSettingsActivity = new Intent(MainActivity.this, MainSettings.class);
-                //intentToStartSettingsActivity.putExtra(Intent.EXTRA_TEXT, weatherForDay);
                 startActivity(intentToStartSettingsActivity);
             }
         });

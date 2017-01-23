@@ -41,7 +41,7 @@ public final class NetworkUtils {
     private static final String API_KEY = "";
 
     /* The API Key parameter required in the url */
-    final static String API_KEY_PARAM = "api_key";
+    private static final String API_KEY_PARAM = "api_key";
 
     /**
      * Builds the URL used to talk to the movieDB server using a sort query.
