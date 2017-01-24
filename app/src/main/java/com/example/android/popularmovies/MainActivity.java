@@ -1,7 +1,13 @@
 package com.example.android.popularmovies;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -19,6 +25,8 @@ import com.example.android.popularmovies.widget.SegmentedButton;
 
 import java.net.URL;
 
+import static com.example.android.popularmovies.utilities.NetworkUtils.isNetworkAvailable;
+
 public class MainActivity extends AppCompatActivity implements MovieAdapterOnClickHandler {
 
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -34,7 +42,10 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
 
     private String[] mMovieId;
 
-    private String mPosterVersion = "w500";
+    private String mPosterPortraitVersion = "w500";
+    private String mPosterLandscapeVersion = "w342";
+
+    private static boolean mConnected = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,11 +122,12 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
 //        LinearLayoutManager layoutManager
 //                = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
 
-        GridLayoutManager layoutManager
-                = new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false);
 
         //GridLayoutManager layoutManager
         //        = new GridLayoutManager(this, GridLayoutManager.DEFAULT_SPAN_COUNT, GridLayoutManager.VERTICAL, false);
+
+        GridLayoutManager layoutManager
+                = new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false);
 
         mRecyclerView.setLayoutManager(layoutManager);
 
@@ -137,9 +149,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         /*
          * The ProgressBar that will indicate to the user that we are loading data. It will be
          * hidden when no data is loading.
-         *
-         * Please note: This so called "ProgressBar" isn't a bar by default. It is more of a
-         * circle. We didn't make the rules (or the names of Views), we just follow them.
          */
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
 
@@ -147,21 +156,36 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         loadMovieData();
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.main, menu);
-//        return true;
-//    }
-
     /**
-     * This method will get the user's preferred location for weather, and then tell some
-     * background method to get the weather data in the background.
+     * This method will get sort query from the user, and then tell some
+     * background method to get the movie data in the background.
      */
     private void loadMovieData() {
         showMovieDataView();
 
         new FetchMovieTask().execute(sortQuery);
     }
+
+    /**
+     * This method will check the internet connection
+     */
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
+
+    static Handler connectionHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what != 1) { // If not connected
+                mConnected = false;
+            } else { // If connected
+                mConnected = true;
+            }
+        }
+    };
 
     /**
      * This method is overridden by our MainActivity class in order to handle RecyclerView item
@@ -178,7 +202,11 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
 
         intentToStartMovieDetailActivity.putExtra(Intent.EXTRA_TEXT, movieId);
 
-        startActivity(intentToStartMovieDetailActivity);
+        if (mConnected) {
+            startActivity(intentToStartMovieDetailActivity);
+        } else {
+            showErrorMessage();
+        }
     }
 
     /**
@@ -205,6 +233,12 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
     private void showErrorMessage() {
         /* First, hide the currently visible data */
         mRecyclerView.setVisibility(View.INVISIBLE);
+        /* Chose which error message to display */
+        if (!mConnected) {
+            mErrorMessageDisplay.setText(R.string.error_message_internet);
+        } else {
+            mErrorMessageDisplay.setText(R.string.error_message_common);
+        }
         /* Then, show the error */
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
     }
@@ -236,17 +270,26 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
                 return null;
             }
 
+            isNetworkAvailable(connectionHandler, 5000);
+            if (!mConnected) {
+                return null;
+            }
+
             URL movieRequestUrl = NetworkUtils.buildUrl(sortQuery);
 
             try {
                 String jsonMovieResponse = NetworkUtils
                         .getResponseFromHttpUrl(movieRequestUrl);
 
-                //String[] JsonMoviePosters = TheMovieDBJsonUtils
-                //        .getMoviePosterFromJson(MainActivity.this, jsonMovieResponse);
+                String mPosterVersion;
+                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    mPosterVersion = mPosterLandscapeVersion;
+                } else {
+                    mPosterVersion = mPosterPortraitVersion;
+                }
 
                 TheMovieDBJsonUtils.Movie JsonMovieData = TheMovieDBJsonUtils
-                        .getMovieTitleFromJson(MainActivity.this, jsonMovieResponse, mPosterVersion);
+                            .getMovieTitleFromJson(MainActivity.this, jsonMovieResponse, mPosterVersion);
 
                 Movie movie = new Movie();
 
@@ -257,7 +300,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
                 mMovieId = movie.id;
 
                 return movie;
-                //return JsonMoviePosters;
 
             } catch (Exception e) {
                 e.printStackTrace();

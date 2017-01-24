@@ -15,8 +15,15 @@
  */
 package com.example.android.popularmovies.utilities;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Handler;
 import android.util.Log;
+
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -115,5 +122,44 @@ public final class NetworkUtils {
         } finally {
             urlConnection.disconnect();
         }
+    }
+
+    public static void isNetworkAvailable(final Handler handler, final int timeout) {
+        // ask fo message '0' (not connected) or '1' (connected) on 'handler'
+        // the answer must be send before before within the 'timeout' (in milliseconds)
+        new Thread() {
+            private boolean responded = false;
+            @Override
+            public void run() {
+                // set 'responded' to TRUE if is able to connect with google mobile (responds fast)
+                new Thread() {
+                    @Override
+                    public void run() {
+                        HttpGet requestForTest = new HttpGet("http://m.google.com");
+                        try {
+                            new DefaultHttpClient().execute(requestForTest);
+                            responded = true;
+                        }
+                        catch (Exception e) {
+                        }
+                    }
+                }.start();
+
+                try {
+                    int waited = 0;
+                    while(!responded && (waited < timeout)) {
+                        sleep(100);
+                        if(!responded ) {
+                            waited += 100;
+                        }
+                    }
+                }
+                catch(InterruptedException e) {} // do nothing
+                finally {
+                    if (!responded) { handler.sendEmptyMessage(0); }
+                    else { handler.sendEmptyMessage(1); }
+                }
+            }
+        }.start();
     }
 }

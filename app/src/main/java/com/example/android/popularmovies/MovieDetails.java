@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
@@ -17,6 +19,8 @@ import com.example.android.popularmovies.utilities.TheMovieDBJsonUtils;
 import com.squareup.picasso.Picasso;
 
 import java.net.URL;
+
+import static com.example.android.popularmovies.utilities.NetworkUtils.isNetworkAvailable;
 
 /**
  * Created by thiba on 21/01/2017.
@@ -42,6 +46,8 @@ public class MovieDetails extends AppCompatActivity {
 
     private String id = "";
 
+    private static boolean mConnected = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,13 +57,12 @@ public class MovieDetails extends AppCompatActivity {
          * Management of menu buttons
          */
         // BACK BUTTON
-        // TODO : Update the code so that after clicking the back-button, the Main Activity is displayed as it was left
+        // TODO : Update the code so that after clicking the back-button, the Main Activity is displayed exactly as it was left
         final ImageView back = (ImageView) findViewById(R.id.iv_back_movie_details);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intentToStartMainActivity = new Intent(MovieDetails.this, MainActivity.class);
-                startActivity(intentToStartMainActivity);
+                finish();
             }
         });
 
@@ -82,6 +87,17 @@ public class MovieDetails extends AppCompatActivity {
         loadMovieDetailData();
     }
 
+    static Handler connectionHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what != 1) { // code if not connected
+                mConnected = false;
+            } else { // code if connected
+                mConnected = true;
+            }
+        }
+    };
+
     private void loadMovieDetailData() {
         showMovieDataView();
 
@@ -98,6 +114,11 @@ public class MovieDetails extends AppCompatActivity {
     private void showErrorMessage() {
         /* First, hide the currently visible data */
         mDetailLayout.setVisibility(View.INVISIBLE);
+        if (!mConnected) {
+            mErrorMessageDisplay.setText(R.string.error_message_internet);
+        } else {
+            mErrorMessageDisplay.setText(R.string.error_message_common);
+        }
         /* Then, show the error */
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
     }
@@ -126,6 +147,11 @@ public class MovieDetails extends AppCompatActivity {
 
             /* If there's no data, there's nothing to look up. */
             if (params.length == 0) {
+                return null;
+            }
+
+            isNetworkAvailable(connectionHandler, 5000);
+            if (!mConnected) {
                 return null;
             }
 

@@ -33,3 +33,7 @@ dependencies {
 repositories {
     mavenCentral()
 }
+
+android {
+    useLibrary 'org.apache.http.legacy'
+}
