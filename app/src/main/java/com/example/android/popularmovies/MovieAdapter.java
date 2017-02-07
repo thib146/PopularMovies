@@ -8,15 +8,21 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.android.popularmovies.utilities.Movie;
+import com.example.android.popularmovies.utilities.MovieArrays;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+
 /**
- * Created by Thibaut on 20/01/2017.
+ * Created by thib146 on 20/01/2017.
  */
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder> {
 
-    private MainActivity.Movie mMoviesData;
+    //private MainActivity.Movie mMoviesData;
+    private MovieArrays mMoviesData;
+
     public int adapterPosition;
 
     /*
@@ -64,7 +70,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         @Override
         public void onClick(View v) {
             adapterPosition = getAdapterPosition();
-            String movieDetails = mMoviesData.posterPath[adapterPosition];
+            //String movieDetails = mMoviesData.posterPath[adapterPosition];
+            String movieDetails = mMoviesData.posterPath.get(adapterPosition);
             mClickHandler.onClick(movieDetails);
         }
     }
@@ -74,11 +81,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
      * is laid out. Enough ViewHolders will be created to fill the screen and allow for scrolling.
      *
      * @param viewGroup The ViewGroup that these ViewHolders are contained within.
-     * @param viewType  If your RecyclerView has more than one type of item (which ours doesn't) you
-     *                  can use this viewType integer to provide a different layout. See
-     *                  {@link android.support.v7.widget.RecyclerView.Adapter#getItemViewType(int)}
-     *                  for more details.
-     * @return A new ForecastAdapterViewHolder that holds the View for each list item
+     * @param viewType In case of multiple view types
+     * @return A new MovieAdapterViewHolder that holds the View for each list item
      */
     @Override
     public MovieAdapterViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
@@ -103,11 +107,14 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
      */
     @Override
     public void onBindViewHolder(MovieAdapterViewHolder movieAdapterViewHolder, int position) {
-        String oneMoviePosters = mMoviesData.posterPath[position];
-        String oneMovieTitles = mMoviesData.title[position];
+        //String oneMoviePoster = mMoviesData.posterPath[position];
+        String oneMoviePoster = mMoviesData.posterPath.get(position);
+        //String oneMovieTitle = mMoviesData.title[position];
+        String oneMovieTitle = mMoviesData.title.get(position);
         Context context = movieAdapterViewHolder.mMovieImageView.getContext();
-        Picasso.with(context).load(oneMoviePosters).into(movieAdapterViewHolder.mMovieImageView);
-        movieAdapterViewHolder.mMovieTitleTextView.setText(oneMovieTitles);
+
+        Picasso.with(context).load(oneMoviePoster).into(movieAdapterViewHolder.mMovieImageView);
+        movieAdapterViewHolder.mMovieTitleTextView.setText(oneMovieTitle);
     }
 
     /**
@@ -119,18 +126,73 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     @Override
     public int getItemCount() {
         if (null == mMoviesData) return 0;
-        return mMoviesData.posterPath.length;
+        return mMoviesData.posterPath.size();
     }
 
     /**
-     * This method is used to set the weather forecast on a ForecastAdapter if we've already
+     * This method is used to set the movie data on a MovieAdapter if we've already
      * created one. This is handy when we get new data from the web but don't want to create a
-     * new ForecastAdapter to display it.
+     * new MovieAdapter to display it.
      *
-     * @param moviesData The new weather data to be displayed.
+     * @param moviesData The new movie data to be displayed.
      */
-    public void setMovieData(MainActivity.Movie moviesData) {
-        mMoviesData = moviesData;
+    public void setMovieData(MovieArrays moviesData) {
+        //mMoviesData = moviesData;
+
+        mMoviesData = new MovieArrays();
+        mMoviesData.posterPath = new ArrayList<String>();
+        mMoviesData.description = new ArrayList<String>();
+        mMoviesData.title = new ArrayList<String>();
+        mMoviesData.releaseDate = new ArrayList<String>();
+        mMoviesData.id = new ArrayList<String>();
+        mMoviesData.originalTitle = new ArrayList<String>();
+        mMoviesData.popularity = new ArrayList<String>();
+        mMoviesData.voteCount = new ArrayList<String>();
+        mMoviesData.voteAverage = new ArrayList<String>();
+
+        if (moviesData == null) {
+            mMoviesData = null;
+            return;
+        }
+
+        for (int i=0; i<20; i++) {
+            mMoviesData.posterPath.add(i, moviesData.posterPath.get(i));
+            mMoviesData.description.add(i, moviesData.description.get(i));
+            mMoviesData.releaseDate.add(i, moviesData.releaseDate.get(i));
+            mMoviesData.id.add(i, moviesData.id.get(i));
+            mMoviesData.title.add(i, moviesData.title.get(i));
+            mMoviesData.originalTitle.add(i, moviesData.originalTitle.get(i));
+            mMoviesData.popularity.add(i, moviesData.popularity.get(i));
+            mMoviesData.voteCount.add(i, moviesData.voteCount.get(i));
+            mMoviesData.voteAverage.add(i, moviesData.voteAverage.get(i));
+        }
+
         notifyDataSetChanged();
     }
+
+    public void addMovieData(MovieArrays moviesData, int currentPageNumber) {
+
+        if (moviesData == null) {
+            return;
+        }
+        int lengthMoviesData = mMoviesData.posterPath.size();
+
+        for (int i = 0; i < 20; i++) {
+            mMoviesData.posterPath.add(i+lengthMoviesData, moviesData.posterPath.get(i));
+            mMoviesData.description.add(i+lengthMoviesData, moviesData.description.get(i));
+            mMoviesData.releaseDate.add(i+lengthMoviesData, moviesData.releaseDate.get(i));
+            mMoviesData.id.add(i+lengthMoviesData, moviesData.id.get(i));
+            mMoviesData.title.add(i+lengthMoviesData, moviesData.title.get(i));
+            mMoviesData.originalTitle.add(i+lengthMoviesData, moviesData.originalTitle.get(i));
+            mMoviesData.popularity.add(i+lengthMoviesData, moviesData.popularity.get(i));
+            mMoviesData.voteCount.add(i+lengthMoviesData, moviesData.voteCount.get(i));
+            mMoviesData.voteAverage.add(i+lengthMoviesData, moviesData.voteAverage.get(i));
+        }
+        notifyDataSetChanged();
+    }
+
+    //public void addMovieData(Movie moviesData) {
+    //    mMoviesData = moviesData;
+    //    notifyDataSetChanged();
+    //}
 }

@@ -1,23 +1,5 @@
-/*
- * Copyright (C) 2016 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.example.android.popularmovies.utilities;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Handler;
 import android.util.Log;
@@ -30,6 +12,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Locale;
 import java.util.Scanner;
 
 /**
@@ -42,10 +25,16 @@ public final class NetworkUtils {
     private static final String THEMOVIEDB_BASE_URL =
             "http://api.themoviedb.org/3/movie";
 
+    private static final String TMDB_LANGUAGE = "language";
+
+    private static final String TMDB_PAGE_NUMBER = "page";
+
+    public static String deviceLanguage = Locale.getDefault().getLanguage();
+
     /**
      * This is where the API KEY from the movieDB is required
      */
-    private static final String API_KEY = "";
+    private static final String API_KEY = "f1a3ae571027c70eb26f1c932a848f85";
 
     /* The API Key parameter required in the url */
     private static final String API_KEY_PARAM = "api_key";
@@ -56,10 +45,12 @@ public final class NetworkUtils {
      * @param sortQuery The sort style (popular/top rated) that will be queried for.
      * @return The URL to use to query the movieDB server.
      */
-    public static URL buildUrl(String sortQuery) {
+    public static URL buildUrl(String sortQuery, String currentPageNumber) {
         Uri builtUri = Uri.parse(THEMOVIEDB_BASE_URL).buildUpon()
                 .appendPath(sortQuery)
                 .appendQueryParameter(API_KEY_PARAM, API_KEY)
+                .appendQueryParameter(TMDB_LANGUAGE, deviceLanguage)
+                .appendQueryParameter(TMDB_PAGE_NUMBER, currentPageNumber)
                 .build();
 
         URL url = null;
@@ -84,6 +75,7 @@ public final class NetworkUtils {
         Uri builtUri = Uri.parse(THEMOVIEDB_BASE_URL).buildUpon()
                 .appendPath(id)
                 .appendQueryParameter(API_KEY_PARAM, API_KEY)
+                .appendQueryParameter(TMDB_LANGUAGE, deviceLanguage)
                 .build();
 
         URL url = null;
@@ -124,9 +116,15 @@ public final class NetworkUtils {
         }
     }
 
+    /**
+     * This method checks if the device is connected to the internet
+     *
+     * @param handler Changes the mConnected global variable according to connexon status
+     * @param timeout Time to wait for the server response before considering that the connexion is lost
+     */
     public static void isNetworkAvailable(final Handler handler, final int timeout) {
-        // ask fo message '0' (not connected) or '1' (connected) on 'handler'
-        // the answer must be send before before within the 'timeout' (in milliseconds)
+        // Asks for message '0' (not connected) or '1' (connected) on 'handler'
+        // the answer must be sent within the 'timeout' (in milliseconds)
         new Thread() {
             private boolean responded = false;
             @Override

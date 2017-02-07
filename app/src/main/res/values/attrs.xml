@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!-- These attributes are used for the Segmented Buttons on the main Activity -->
+
 <resources>
 
     <declare-styleable name="SegmentedButton">

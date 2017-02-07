@@ -19,11 +19,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.android.popularmovies.MovieAdapter.MovieAdapterOnClickHandler;
+import com.example.android.popularmovies.utilities.Movie;
+import com.example.android.popularmovies.utilities.MovieArrays;
 import com.example.android.popularmovies.utilities.NetworkUtils;
 import com.example.android.popularmovies.utilities.TheMovieDBJsonUtils;
 import com.example.android.popularmovies.widget.SegmentedButton;
 
 import java.net.URL;
+import java.util.ArrayList;
 
 import static com.example.android.popularmovies.utilities.NetworkUtils.isNetworkAvailable;
 
@@ -40,10 +43,17 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
 
     private String sortQuery = "popular";
 
-    private String[] mMovieId;
+    //private String[] mMovieId;
+    private ArrayList<String> mMovieId;
+    //private Movie[] mMovie;
+    private MovieArrays[] mMovie;
 
     private String mPosterPortraitVersion = "w500";
     private String mPosterLandscapeVersion = "w342";
+    private int numColumns = 2;
+
+    private String mCurrentPageNumber = "1"; // Initialization to 1
+    private String mTotalPageNumber;
 
     private static boolean mConnected = true;
 
@@ -52,16 +62,12 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar mainToolbar = (Toolbar) findViewById(R.id.main_toolbar);
-        setSupportActionBar(mainToolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-
         /**
          * Creation of the Segmented Buttons using Widget/SegmentedButton
          */
         SegmentedButton buttons = (SegmentedButton)findViewById(R.id.segmented);
         buttons.clearButtons();
-        buttons.addButtons("Most Popular", "Top Rated");
+        buttons.addButtons(getString(R.string.popular_button), getString(R.string.ratings_button));
         // First button is selected
         buttons.setPushedButtonIndex(0);
         // Some example click handlers. Note the click won't get executed
@@ -72,13 +78,13 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
                 if (index == 0) {
                     sortQuery = "popular";
                     mMovieAdapter.setMovieData(null);
+                    mCurrentPageNumber = "1";
                     loadMovieData();
-                    //Toast.makeText(MainActivity.this, "Sort by Most Popular", Toast.LENGTH_SHORT).show();
                 } else {
                     sortQuery = "top_rated";
                     mMovieAdapter.setMovieData(null);
+                    mCurrentPageNumber = "1";
                     loadMovieData();
-                    //Toast.makeText(MainActivity.this, "Sort by Top Rated", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -91,8 +97,10 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         reload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mMovieAdapter.setMovieData(null);
-                loadMovieData();
+                //mMovieAdapter.setMovieData(null);
+                //mCurrentPageNumber = "1";
+                //loadMovieData();
+                loadMoreMovieData();
             }
         });
         // SETTINGS BUTTON
@@ -115,19 +123,10 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display);
 
         /*
-         * LinearLayoutManager can support HORIZONTAL or VERTICAL orientations. The reverse layout
-         * parameter is useful mostly for HORIZONTAL layouts that should reverse for right to left
-         * languages.
+         * GridLayoutManager declaration for our movie posters. Limited to 2 columns
          */
-//        LinearLayoutManager layoutManager
-//                = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-
-
-        //GridLayoutManager layoutManager
-        //        = new GridLayoutManager(this, GridLayoutManager.DEFAULT_SPAN_COUNT, GridLayoutManager.VERTICAL, false);
-
         GridLayoutManager layoutManager
-                = new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false);
+                = new GridLayoutManager(this, numColumns, GridLayoutManager.VERTICAL, false);
 
         mRecyclerView.setLayoutManager(layoutManager);
 
@@ -135,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
          * Use this setting to improve performance if you know that changes in content do not
          * change the child layout size in the RecyclerView
          */
-        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setHasFixedSize(false);
 
         /*x
          * The MovieAdapter is responsible for linking our movie data with the Views that
@@ -166,6 +165,23 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         new FetchMovieTask().execute(sortQuery);
     }
 
+    private void loadMoreMovieData() {
+        showMovieDataView();
+
+        new FetchMoreMovieTask().execute(sortQuery);
+    }
+
+//    private void loadNextPageMovieData() {
+//        mMovieAdapter = new MovieAdapter(this);
+//
+//        /* Setting the adapter attaches it to the RecyclerView in our layout. */
+//        mRecyclerView.setAdapter(mMovieAdapter);
+//
+//        showMovieDataView();
+//
+//        new FetchMoreMovieTask().execute(sortQuery);
+//    }
+
     /**
      * This method will check the internet connection
      */
@@ -176,6 +192,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
+    /**
+     * This method will change mConnected according to the internet connection
+     */
     static Handler connectionHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -196,7 +215,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
     @Override
     public void onClick(String movieID) {
         int adapterPosition = mMovieAdapter.adapterPosition;
-        String movieId = mMovieId[adapterPosition];
+        //String movieId = mMovieId[adapterPosition];
+        String movieId = mMovieId.get(adapterPosition);
 
         Intent intentToStartMovieDetailActivity = new Intent(this, MovieDetails.class);
 
@@ -212,26 +232,20 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
     /**
      * This method will make the View for the movie data visible and
      * hide the error message.
-     * <p>
-     * Since it is okay to redundantly set the visibility of a View, we don't
-     * need to check whether each view is currently visible or invisible.
      */
     private void showMovieDataView() {
-        /* First, make sure the error is invisible */
+        /* Hide the error message */
         mErrorMessageDisplay.setVisibility(View.INVISIBLE);
-        /* Then, make sure the weather data is visible */
+        /* Make the movie data visible */
         mRecyclerView.setVisibility(View.VISIBLE);
     }
 
     /**
      * This method will make the error message visible and hide the movie
      * View.
-     * <p>
-     * Since it is okay to redundantly set the visibility of a View, we don't
-     * need to check whether each view is currently visible or invisible.
      */
     private void showErrorMessage() {
-        /* First, hide the currently visible data */
+        /* Hide the current data */
         mRecyclerView.setVisibility(View.INVISIBLE);
         /* Chose which error message to display */
         if (!mConnected) {
@@ -239,23 +253,12 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         } else {
             mErrorMessageDisplay.setText(R.string.error_message_common);
         }
-        /* Then, show the error */
+        /* Show the error view */
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
     }
 
-    public class Movie {
-        public String[] posterPath;
-        public String[] description;
-        public String[] releaseDate;
-        public String[] id;
-        public String[] title;
-        public String[] originalTitle;
-        public String[] popularity;
-        public String[] voteCount;
-        public String[] voteAverage;
-    }
-
-    public class FetchMovieTask extends AsyncTask<String, Void, Movie> {
+    // This method will get the 20 first movies in the background and send them to the Adapter
+    public class FetchMovieTask extends AsyncTask<String, Void, MovieArrays[]> {
 
         @Override
         protected void onPreExecute() {
@@ -263,7 +266,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
             mLoadingIndicator.setVisibility(View.VISIBLE);
         }
 
-        protected Movie doInBackground(String... params) {
+        protected MovieArrays[] doInBackground(String... params) {
 
             /* If there's no data, there's nothing to look up. */
             if (params.length == 0) {
@@ -275,7 +278,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
                 return null;
             }
 
-            URL movieRequestUrl = NetworkUtils.buildUrl(sortQuery);
+            URL movieRequestUrl = NetworkUtils.buildUrl(sortQuery, mCurrentPageNumber);
 
             try {
                 String jsonMovieResponse = NetworkUtils
@@ -288,18 +291,42 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
                     mPosterVersion = mPosterPortraitVersion;
                 }
 
-                TheMovieDBJsonUtils.Movie JsonMovieData = TheMovieDBJsonUtils
-                            .getMovieTitleFromJson(MainActivity.this, jsonMovieResponse, mPosterVersion);
+                // Read the 20 first movies from the Json file
+                MovieArrays JsonMovieData = TheMovieDBJsonUtils
+                        .getMovieDataFromJson(MainActivity.this, jsonMovieResponse, mPosterVersion);
 
-                Movie movie = new Movie();
+                mTotalPageNumber = JsonMovieData.totalPageNumber;
+                int totalPageNumberInt = Integer.valueOf(mTotalPageNumber);
 
-                movie.posterPath = JsonMovieData.posterPath;
-                movie.title = JsonMovieData.title;
-                movie.id = JsonMovieData.id;
+                mMovie = new MovieArrays[totalPageNumberInt];
+                for (int i = 0; i < totalPageNumberInt; i++) {
+                    mMovie[i] = new MovieArrays();
+                    mMovie[i].posterPath = new ArrayList<String>();
+                    mMovie[i].title = new ArrayList<String>();
+                    mMovie[i].id = new ArrayList<String>();
+                    mMovie[i].description = new ArrayList<String>();
+                    mMovie[i].releaseDate = new ArrayList<String>();
+                    mMovie[i].originalTitle = new ArrayList<String>();
+                    mMovie[i].popularity = new ArrayList<String>();
+                    mMovie[i].voteCount = new ArrayList<String>();
+                    mMovie[i].voteAverage = new ArrayList<String>();
+                }
 
-                mMovieId = movie.id;
+                mMovie[0].posterPath = JsonMovieData.posterPath;
+                mMovie[0].title = JsonMovieData.originalTitle;
+                mMovie[0].id = JsonMovieData.id;
+                mMovie[0].description = JsonMovieData.description;
+                mMovie[0].releaseDate = JsonMovieData.releaseDate;
+                mMovie[0].originalTitle = JsonMovieData.originalTitle;
+                mMovie[0].popularity = JsonMovieData.popularity;
+                mMovie[0].voteCount = JsonMovieData.voteCount;
+                mMovie[0].voteAverage = JsonMovieData.voteAverage;
 
-                return movie;
+                mMovieId = mMovie[0].id;
+
+                mCurrentPageNumber = "2";
+
+                return mMovie;
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -308,11 +335,97 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         }
 
         @Override
-        protected void onPostExecute(Movie movieData) {
+        protected void onPostExecute(MovieArrays[] movieData) {
             mLoadingIndicator.setVisibility(View.INVISIBLE);
             if (movieData != null) {
                 showMovieDataView();
-                mMovieAdapter.setMovieData(movieData);
+                mMovieAdapter.setMovieData(movieData[0]);
+            } else {
+                showErrorMessage();
+            }
+        }
+    }
+
+    // This method will get 20 more movies in the background and send them to the Adapter
+    public class FetchMoreMovieTask extends AsyncTask<String, Void, MovieArrays[]> {
+
+        protected MovieArrays[] doInBackground(String... params) {
+
+            /* If there's no data, there's nothing to look up. */
+            if (params.length == 0) {
+                return null;
+            }
+
+            // Check the internet connection and stop everything if we lost it
+            isNetworkAvailable(connectionHandler, 5000);
+            if (!mConnected) {
+                return null;
+            }
+
+            // Set the integer versions of the PageNumbers
+            int currentPageNumberInt = Integer.valueOf(mCurrentPageNumber);
+            int totalPageNumberInt = Integer.valueOf(mTotalPageNumber);
+
+            // If we reached the last page, then we stop
+            if (currentPageNumberInt > totalPageNumberInt) {
+                return null;
+            }
+
+            // Make the new URL for the next page of data
+            URL movieRequestUrl = NetworkUtils.buildUrl(sortQuery, mCurrentPageNumber);
+
+            try {
+                String jsonMovieResponse = NetworkUtils
+                        .getResponseFromHttpUrl(movieRequestUrl);
+
+                // Check the orientation of the phone to change the poster sizes accordingly
+                String mPosterVersion;
+                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    mPosterVersion = mPosterLandscapeVersion;
+                } else {
+                    mPosterVersion = mPosterPortraitVersion;
+                }
+
+                // Read 20 new movies from the Json file
+                MovieArrays JsonMovieData = TheMovieDBJsonUtils
+                        .getMovieDataFromJson(MainActivity.this, jsonMovieResponse, mPosterVersion);
+
+                // Get all the data from the new page in the Json file
+                mMovie[currentPageNumberInt-1].posterPath = JsonMovieData.posterPath;
+                mMovie[currentPageNumberInt-1].title = JsonMovieData.originalTitle;
+                mMovie[currentPageNumberInt-1].id = JsonMovieData.id;
+                mMovie[currentPageNumberInt-1].description = JsonMovieData.description;
+                mMovie[currentPageNumberInt-1].releaseDate = JsonMovieData.releaseDate;
+                mMovie[currentPageNumberInt-1].originalTitle = JsonMovieData.originalTitle;
+                mMovie[currentPageNumberInt-1].popularity = JsonMovieData.popularity;
+                mMovie[currentPageNumberInt-1].voteCount = JsonMovieData.voteCount;
+                mMovie[currentPageNumberInt-1].voteAverage = JsonMovieData.voteAverage;
+
+                // Add all the new IDs (20) to the mMovieId global variable
+                for (int i = 0; i < 20; i++) {
+                    mMovieId.add(mMovie[currentPageNumberInt-1].id.get(i));
+                }
+
+                // return the new data to use it in onPostExecute
+                return mMovie;
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(MovieArrays[] movieData) {
+            if (movieData != null) {
+                int currentPageNumberInt = Integer.valueOf(mCurrentPageNumber);
+
+                // Send the 20 new movies to the Adapter for it to add them to the RecyclerView
+                mMovieAdapter.addMovieData(movieData[currentPageNumberInt-1], currentPageNumberInt);
+
+                // Increase the currentPageNumber
+                currentPageNumberInt += 1;
+                mCurrentPageNumber = String.valueOf(currentPageNumberInt);
             } else {
                 showErrorMessage();
             }

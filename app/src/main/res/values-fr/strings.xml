@@ -1,0 +1,23 @@
+<!-- French translation of the App -->
+
+<resources>
+    <string name="app_name">Films Populaires</string>
+    <string name="movie_details">Informations du Film</string>
+    <string name="settings">Options</string>
+    <string name="about">A propos</string>
+    <string name="error_message_common">
+        Une erreur est survenue. Veuillez rééssayer en touchant le bouton de rafraîchissement.
+    </string>
+    <string name="error_message_internet">
+        Il semble que la connection internet ait été arrêtée. Veuillez vérifier la connection de votre appareil et rééssayer en touchant le bouton de rafraîchissement.
+    </string>
+
+    <string name="movie_release_date">Date de sortie: %1$s</string>
+    <string name="movie_ratings">Notes: %1$s/10</string>
+
+    <string name="popular_button">Populaires</string>
+    <string name="ratings_button">Mieux Notés</string>
+
+    <string name="app_about_intro">Cette application a été créée par</string>
+    <string name="app_author_website_label">Site internet:</string>
+</resources>

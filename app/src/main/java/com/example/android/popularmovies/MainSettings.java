@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
- * Created by Thibaut on 21/01/2017.
+ * Created by thib146 on 21/01/2017.
  */
 
 public class MainSettings extends AppCompatActivity {

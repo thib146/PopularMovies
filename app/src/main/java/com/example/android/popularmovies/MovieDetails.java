@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
@@ -14,11 +15,13 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.android.popularmovies.utilities.MovieArrays;
 import com.example.android.popularmovies.utilities.NetworkUtils;
 import com.example.android.popularmovies.utilities.TheMovieDBJsonUtils;
 import com.squareup.picasso.Picasso;
 
 import java.net.URL;
+import java.util.ArrayList;
 
 import static com.example.android.popularmovies.utilities.NetworkUtils.isNetworkAvailable;
 
@@ -34,7 +37,7 @@ public class MovieDetails extends AppCompatActivity {
 
     private ProgressBar mLoadingIndicator;
 
-    private LinearLayout mDetailLayout;
+    private ConstraintLayout mDetailLayout;
 
     private TextView mMovieTitle;
     private TextView mReleaseDate;
@@ -57,7 +60,6 @@ public class MovieDetails extends AppCompatActivity {
          * Management of menu buttons
          */
         // BACK BUTTON
-        // TODO : Update the code so that after clicking the back-button, the Main Activity is displayed exactly as it was left
         final ImageView back = (ImageView) findViewById(R.id.iv_back_movie_details);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,7 +68,7 @@ public class MovieDetails extends AppCompatActivity {
             }
         });
 
-        mDetailLayout = (LinearLayout) findViewById(R.id.ll_detail_layout);
+        mDetailLayout = (ConstraintLayout) findViewById(R.id.ll_detail_layout);
 
         Intent intentThatStartedThatActivity = getIntent();
 
@@ -135,7 +137,7 @@ public class MovieDetails extends AppCompatActivity {
         public String voteAverage;
     }
 
-    public class FetchMovieDetailTask extends AsyncTask<String, Void, Movie> {
+    public class FetchMovieDetailTask extends AsyncTask<String, Void, MovieArrays> {
 
         @Override
         protected void onPreExecute() {
@@ -143,7 +145,7 @@ public class MovieDetails extends AppCompatActivity {
             mLoadingIndicator.setVisibility(View.VISIBLE);
         }
 
-        protected Movie doInBackground(String... params) {
+        protected MovieArrays doInBackground(String... params) {
 
             /* If there's no data, there's nothing to look up. */
             if (params.length == 0) {
@@ -161,25 +163,42 @@ public class MovieDetails extends AppCompatActivity {
                 String jsonMovieResponse = NetworkUtils
                         .getResponseFromHttpUrl(movieRequestUrl);
 
-                TheMovieDBJsonUtils.Movie JsonMovieData = TheMovieDBJsonUtils
-                        .getMovieTitleFromJson(MovieDetails.this, jsonMovieResponse, mPosterVersion);
+                //Movie JsonMovieData = TheMovieDBJsonUtils
+                //.getMovieDataFromJson(MovieDetails.this, jsonMovieResponse, mPosterVersion);
 
-                Movie movie = new Movie();
+                MovieArrays JsonMovieData = TheMovieDBJsonUtils
+                        .getMovieDataFromJson(MovieDetails.this, jsonMovieResponse, mPosterVersion);
 
-                movie.posterPath = JsonMovieData.posterPath[0];
-                movie.title = JsonMovieData.title[0];
-                movie.description = JsonMovieData.description[0];
-                //movie.id = JsonMovieData.id[0];
-                movie.originalTitle = JsonMovieData.originalTitle[0];
-                //movie.popularity = JsonMovieData.popularity[0];
-                movie.releaseDate = JsonMovieData.releaseDate[0];
-                movie.voteAverage = JsonMovieData.voteAverage[0];
-                //movie.voteCount = JsonMovieData.voteCount[0];
+                //Movie movie = new Movie();
+                MovieArrays movie = new MovieArrays();
+                movie.posterPath = new ArrayList<>();
+                movie.title = new ArrayList<>();
+                movie.description = new ArrayList<>();
+                movie.originalTitle = new ArrayList<>();
+                movie.releaseDate = new ArrayList<>();
+                movie.voteAverage = new ArrayList<>();
 
-                //Log.v(TAG, "Movie Poster", JsonMoviePosters[0]);
+//                movie.posterPath = JsonMovieData.posterPath[0];
+//                movie.title = JsonMovieData.originalTitle[0];
+//                movie.description = JsonMovieData.description[0];
+//                //movie.id = JsonMovieData.id[0];
+//                movie.originalTitle = JsonMovieData.originalTitle[0];
+//                //movie.popularity = JsonMovieData.popularity[0];
+//                movie.releaseDate = JsonMovieData.releaseDate[0];
+//                movie.voteAverage = JsonMovieData.voteAverage[0];
+//                //movie.voteCount = JsonMovieData.voteCount[0];
+
+                movie.posterPath = JsonMovieData.posterPath;
+                movie.title = JsonMovieData.originalTitle;
+                movie.description = JsonMovieData.description;
+                //movie.id = JsonMovieData.id;
+                movie.originalTitle = JsonMovieData.originalTitle;
+                //movie.popularity = JsonMovieData.popularity;
+                movie.releaseDate = JsonMovieData.releaseDate;
+                movie.voteAverage = JsonMovieData.voteAverage;
+                //movie.voteCount = JsonMovieData.voteCount;
 
                 return movie;
-                //return JsonMoviePosters;
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -188,7 +207,7 @@ public class MovieDetails extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(Movie movieData) {
+        protected void onPostExecute(MovieArrays movieData) {
             mLoadingIndicator.setVisibility(View.INVISIBLE);
             if (movieData != null) {
                 showMovieDataView();
@@ -196,12 +215,18 @@ public class MovieDetails extends AppCompatActivity {
                 Resources resources = getResources();
                 Context context = mMoviePoster.getContext();
 
-                Picasso.with(context).load(movieData.posterPath).into(mMoviePoster);
+                //Picasso.with(context).load(movieData.posterPath).into(mMoviePoster);
+                Picasso.with(context).load(movieData.posterPath.get(0)).into(mMoviePoster);
 
-                mMovieTitle.setText(movieData.title);
-                mReleaseDate.setText(String.format(resources.getString(R.string.movie_release_date), movieData.releaseDate));
-                mMovieDescription.setText(String.format(resources.getString(R.string.movie_description), movieData.description));
-                mMovieRatings.setText(String.format(resources.getString(R.string.movie_ratings), movieData.voteAverage));
+//                mMovieTitle.setText(movieData.title);
+//                mReleaseDate.setText(String.format(resources.getString(R.string.movie_release_date), movieData.releaseDate));
+//                mMovieDescription.setText(String.format(resources.getString(R.string.movie_description), movieData.description));
+//                mMovieRatings.setText(String.format(resources.getString(R.string.movie_ratings), movieData.voteAverage));
+
+                mMovieTitle.setText(movieData.title.get(0));
+                mReleaseDate.setText(String.format(resources.getString(R.string.movie_release_date), movieData.releaseDate.get(0)));
+                mMovieDescription.setText(String.format(resources.getString(R.string.movie_description), movieData.description.get(0)));
+                mMovieRatings.setText(String.format(resources.getString(R.string.movie_ratings), movieData.voteAverage.get(0)));
             } else {
                 showErrorMessage();
             }
