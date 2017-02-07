@@ -34,7 +34,7 @@ public final class NetworkUtils {
     /**
      * This is where the API KEY from the movieDB is required
      */
-    private static final String API_KEY = "f1a3ae571027c70eb26f1c932a848f85";
+    private static final String API_KEY = "";
 
     /* The API Key parameter required in the url */
     private static final String API_KEY_PARAM = "api_key";

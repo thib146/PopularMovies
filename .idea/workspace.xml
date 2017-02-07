@@ -43,7 +43,7 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
-      <file leaf-file-name="MainActivity.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="MainActivity.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/android/popularmovies/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="330">
@@ -69,9 +69,9 @@
             <state relative-caret-position="4180">
               <caret line="221" column="32" selection-start-line="221" selection-start-column="32" selection-end-line="221" selection-end-column="32" />
               <folding>
-                <marker date="1486472651895" expanded="false" signature="7996:8044" ph="&quot;Release date: %1$s&quot;" />
-                <marker date="1486472651895" expanded="false" signature="8129:8176" ph="&quot;Synopsis: %1$s&quot;" />
-                <marker date="1486472651895" expanded="false" signature="8257:8300" ph="&quot;Ratings: %1$s/10&quot;" />
+                <marker date="1486498090045" expanded="false" signature="7996:8044" ph="&quot;Release date: %1$s&quot;" />
+                <marker date="1486498090045" expanded="false" signature="8129:8176" ph="&quot;Synopsis: %1$s&quot;" />
+                <marker date="1486498090045" expanded="false" signature="8257:8300" ph="&quot;Ratings: %1$s/10&quot;" />
               </folding>
             </state>
           </provider>
@@ -135,11 +135,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="NetworkUtils.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="NetworkUtils.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/android/popularmovies/utilities/NetworkUtils.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1936">
-              <caret line="101" column="13" selection-start-line="101" selection-start-column="13" selection-end-line="101" selection-end-column="13" />
+            <state relative-caret-position="274">
+              <caret line="29" column="58" selection-start-line="29" selection-start-column="58" selection-end-line="29" selection-end-column="58" />
               <folding />
             </state>
           </provider>
@@ -1853,7 +1853,6 @@
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_about.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/values/attrs.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/values-fr/strings.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/android/popularmovies/utilities/NetworkUtils.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/android/popularmovies/utilities/Movie.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/android/popularmovies/MovieDetails.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/android/popularmovies/utilities/MovieArrays.java" />
@@ -1861,6 +1860,7 @@
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/android/popularmovies/MovieAdapter.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/android/popularmovies/MainActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/android/popularmovies/utilities/NetworkUtils.java" />
       </list>
     </option>
   </component>
@@ -2400,9 +2400,9 @@
         <state relative-caret-position="4466">
           <caret line="227" column="1" selection-start-line="227" selection-start-column="1" selection-end-line="227" selection-end-column="1" />
           <folding>
-            <marker date="1486472651895" expanded="false" signature="7996:8044" ph="&quot;Release date: %1$s&quot;" />
-            <marker date="1486472651895" expanded="false" signature="8129:8176" ph="&quot;Synopsis: %1$s&quot;" />
-            <marker date="1486472651895" expanded="false" signature="8257:8300" ph="&quot;Ratings: %1$s/10&quot;" />
+            <marker date="1486498090045" expanded="false" signature="7996:8044" ph="&quot;Release date: %1$s&quot;" />
+            <marker date="1486498090045" expanded="false" signature="8129:8176" ph="&quot;Synopsis: %1$s&quot;" />
+            <marker date="1486498090045" expanded="false" signature="8257:8300" ph="&quot;Ratings: %1$s/10&quot;" />
           </folding>
         </state>
       </provider>
@@ -2492,9 +2492,9 @@
         <state relative-caret-position="3300">
           <caret line="173" column="65" selection-start-line="173" selection-start-column="65" selection-end-line="173" selection-end-column="65" />
           <folding>
-            <marker date="1486472651895" expanded="false" signature="7996:8044" ph="&quot;Release date: %1$s&quot;" />
-            <marker date="1486472651895" expanded="false" signature="8129:8176" ph="&quot;Synopsis: %1$s&quot;" />
-            <marker date="1486472651895" expanded="false" signature="8257:8300" ph="&quot;Ratings: %1$s/10&quot;" />
+            <marker date="1486498090045" expanded="false" signature="7996:8044" ph="&quot;Release date: %1$s&quot;" />
+            <marker date="1486498090045" expanded="false" signature="8129:8176" ph="&quot;Synopsis: %1$s&quot;" />
+            <marker date="1486498090045" expanded="false" signature="8257:8300" ph="&quot;Ratings: %1$s/10&quot;" />
           </folding>
         </state>
       </provider>
@@ -2752,9 +2752,9 @@
         <state relative-caret-position="4180">
           <caret line="221" column="32" selection-start-line="221" selection-start-column="32" selection-end-line="221" selection-end-column="32" />
           <folding>
-            <marker date="1486472651895" expanded="false" signature="7996:8044" ph="&quot;Release date: %1$s&quot;" />
-            <marker date="1486472651895" expanded="false" signature="8129:8176" ph="&quot;Synopsis: %1$s&quot;" />
-            <marker date="1486472651895" expanded="false" signature="8257:8300" ph="&quot;Ratings: %1$s/10&quot;" />
+            <marker date="1486498090045" expanded="false" signature="7996:8044" ph="&quot;Release date: %1$s&quot;" />
+            <marker date="1486498090045" expanded="false" signature="8129:8176" ph="&quot;Synopsis: %1$s&quot;" />
+            <marker date="1486498090045" expanded="false" signature="8257:8300" ph="&quot;Ratings: %1$s/10&quot;" />
           </folding>
         </state>
       </provider>
@@ -2775,18 +2775,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/android/popularmovies/utilities/NetworkUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1936">
-          <caret line="101" column="13" selection-start-line="101" selection-start-column="13" selection-end-line="101" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/android/popularmovies/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="330">
           <caret line="312" column="17" selection-start-line="312" selection-start-column="17" selection-end-line="312" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/android/popularmovies/utilities/NetworkUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="274">
+          <caret line="29" column="58" selection-start-line="29" selection-start-column="58" selection-end-line="29" selection-end-column="58" />
           <folding />
         </state>
       </provider>
