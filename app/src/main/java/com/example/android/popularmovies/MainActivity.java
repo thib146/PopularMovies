@@ -13,6 +13,8 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -30,7 +32,8 @@ import java.util.ArrayList;
 
 import static com.example.android.popularmovies.utilities.NetworkUtils.isNetworkAvailable;
 
-public class MainActivity extends AppCompatActivity implements MovieAdapterOnClickHandler {
+public class MainActivity extends AppCompatActivity
+        implements MovieAdapterOnClickHandler {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -56,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
     private String mTotalPageNumber;
 
     private static boolean mConnected = true;
+    private boolean mBottomReachedOnce = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,8 +129,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         /*
          * GridLayoutManager declaration for our movie posters. Limited to 2 columns
          */
-        GridLayoutManager layoutManager
-                = new GridLayoutManager(this, numColumns, GridLayoutManager.VERTICAL, false);
+        final CustomGridLayoutManager layoutManager
+                = new CustomGridLayoutManager(this, numColumns, GridLayoutManager.VERTICAL, false);
 
         mRecyclerView.setLayoutManager(layoutManager);
 
@@ -135,6 +139,21 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
          * change the child layout size in the RecyclerView
          */
         mRecyclerView.setHasFixedSize(false);
+
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                int visibleItemCount = layoutManager.getChildCount();
+                int totalItemCount = layoutManager.getItemCount();
+                int pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
+
+                if (pastVisibleItems + visibleItemCount == totalItemCount && !mBottomReachedOnce) {
+                    Log.e(TAG, "Bottom reached!");
+                    loadMoreMovieData();
+                    mBottomReachedOnce = true;
+                }
+            }
+        });
 
         /*x
          * The MovieAdapter is responsible for linking our movie data with the Views that
@@ -153,6 +172,29 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
 
         /* Once all of our views are setup, we can load the weather data. */
         loadMovieData();
+    }
+
+    private static class CustomGridLayoutManager extends GridLayoutManager {
+        /**
+         * Disable predictive animations. There is a bug in RecyclerView which causes views that
+         * are being reloaded to pull invalid ViewHolders from the internal recycler stack if the
+         * adapter size has decreased since the ViewHolder was recycled.
+         */
+        @Override
+        public boolean supportsPredictiveItemAnimations() {
+            return false;
+        }
+        public CustomGridLayoutManager(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+            super(context, attrs, defStyleAttr, defStyleRes);
+        }
+
+        public CustomGridLayoutManager(Context context, int spanCount) {
+            super(context, spanCount);
+        }
+
+        public CustomGridLayoutManager(Context context, int spanCount, int orientation, boolean reverseLayout) {
+            super(context, spanCount, orientation, reverseLayout);
+        }
     }
 
     /**
@@ -239,6 +281,18 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         /* Make the movie data visible */
         mRecyclerView.setVisibility(View.VISIBLE);
     }
+
+//    class CustomScrollListener extends RecyclerView.OnScrollListener {
+//
+//        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+//            int visibleItemCount = layoutManager.getChildCount();
+//            int totalItemCount = mLayoutManager.getItemCount();
+//            int pastVisibleItems = mLayoutManager.findFirstVisibleItemPosition();
+//            if (pastVisibleItems + visibleItemCount >= totalItemCount) {
+//                //End of list
+//            }
+//        }
+//    }
 
     /**
      * This method will make the error message visible and hide the movie
@@ -340,6 +394,14 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
             if (movieData != null) {
                 showMovieDataView();
                 mMovieAdapter.setMovieData(movieData[0]);
+
+                // Once everything is loaded, allow the scroll feature again after 1 second
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    public void run() {
+                        mBottomReachedOnce = false;
+                    }
+                }, 1000);
             } else {
                 showErrorMessage();
             }
@@ -426,6 +488,14 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
                 // Increase the currentPageNumber
                 currentPageNumberInt += 1;
                 mCurrentPageNumber = String.valueOf(currentPageNumberInt);
+
+                // Once everything is loaded, allow the scroll feature again after 1 second
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    public void run() {
+                        mBottomReachedOnce = false;
+                    }
+                }, 1000);
             } else {
                 showErrorMessage();
             }

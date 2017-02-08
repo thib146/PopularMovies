@@ -26,7 +26,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     public int adapterPosition;
 
     /*
-     * An on-click handler that we've defined to make it easy for an Activity to interface with
+     * An on-click handleF that we've defined to make it easy for an Activity to interface with
      * our RecyclerView
      */
     private final MovieAdapterOnClickHandler mClickHandler;
