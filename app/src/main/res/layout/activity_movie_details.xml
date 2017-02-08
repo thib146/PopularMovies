@@ -8,6 +8,7 @@
     android:layout_height="match_parent"
     android:id="@+id/ll_detail_layout">
 
+    <!-- BEGIN TOOLBAR -->
     <ImageView
         android:id="@+id/movie_details_toolbar"
         android:layout_width="0dp"
@@ -40,7 +41,9 @@
         app:layout_constraintLeft_toRightOf="@+id/iv_back_movie_details"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"/>
+    <!-- END TOOLBAR -->
 
+    <!-- BEGIN MAIN CONTENT -->
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -55,6 +58,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/constraint_layout2">
 
+            <!-- ERROR MESSAGE -->
             <TextView
                 android:id="@+id/tv_error_message_display_detail"
                 android:layout_width="wrap_content"
@@ -67,6 +71,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp" />
 
+            <!-- LOADING INDICATOR -->
             <ProgressBar
                 android:id="@+id/pb_loading_indicator_detail"
                 android:layout_width="wrap_content"
@@ -77,6 +82,7 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent" />
 
+            <!-- MOVIE POSTER -->
             <ImageView
                 android:id="@+id/iv_movie_poster_detail"
                 android:layout_width="90dp"
@@ -88,6 +94,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"/>
 
+            <!-- TITLE -->
             <TextView
                 android:id="@+id/tv_movie_title_details"
                 tools:text="Interstellar"
@@ -99,6 +106,7 @@
                 android:layout_marginLeft="8dp"
                 app:layout_constraintTop_toTopOf="@+id/iv_movie_poster_detail" />
 
+            <!-- ORIGINAL TITLE -->
             <TextView
                 android:id="@+id/tv_movie_original_title_details"
                 tools:text="Original title: Interstellar"
@@ -111,6 +119,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/tv_movie_title_details"
                 android:layout_marginTop="8dp"/>
 
+            <!-- RELEASE DATE -->
             <TextView
                 android:id="@+id/tv_date_details"
                 tools:text="Release date : 11/05/2014"
@@ -121,7 +130,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/tv_movie_original_title_details"
                 app:layout_constraintLeft_toLeftOf="@+id/tv_movie_title_details" />
 
-
+            <!-- SYNOPSIS -->
             <TextView
                 android:id="@+id/tv_description_details"
                 android:layout_width="wrap_content"
@@ -137,6 +146,7 @@
                 android:paddingLeft="16dp"
                 android:paddingStart="16dp"/>
 
+            <!-- USER SCORE -->
             <TextView
                 android:id="@+id/tv_ratings_details"
                 android:layout_width="wrap_content"
@@ -154,5 +164,6 @@
         </android.support.constraint.ConstraintLayout>
 
     </ScrollView>
+    <!-- END MAIN CONTENT -->
 
 </android.support.constraint.ConstraintLayout>

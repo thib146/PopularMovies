@@ -29,6 +29,7 @@ public final class NetworkUtils {
 
     private static final String TMDB_PAGE_NUMBER = "page";
 
+    // Get the device language here
     private static String deviceLanguage = Locale.getDefault().getLanguage();
 
     /**
@@ -40,7 +41,7 @@ public final class NetworkUtils {
     private static final String API_KEY_PARAM = "api_key";
 
     /**
-     * Builds the URL used to talk to the movieDB server using a sort query.
+     * Builds the URL used to talk to the movieDB server using a sort query, a device language and a page number
      *
      * @param sortQuery The sort style (popular/top rated) that will be queried for.
      * @return The URL to use to query the movieDB server.
@@ -65,6 +66,7 @@ public final class NetworkUtils {
         return url;
     }
 
+    // Check if the API Key is empty or not and returns true or false accordingly
     public static boolean isApiKeyOn() {
         return !API_KEY.equals("");
     }
@@ -123,7 +125,7 @@ public final class NetworkUtils {
     /**
      * This method checks if the device is connected to the internet
      *
-     * @param handler Changes the mConnected global variable according to connexon status
+     * @param handler Changes the mConnected global variable according to connection status
      * @param timeout Time to wait for the server response before considering that the connexion is lost
      */
     public static void isNetworkAvailable(final Handler handler, final int timeout) {

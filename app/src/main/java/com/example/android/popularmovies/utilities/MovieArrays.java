@@ -6,6 +6,9 @@ import java.util.ArrayList;
  * Created by thib146 on 07/02/2017.
  */
 
+/**
+ * This class is used to store all the movie data in one variable
+ */
 public class MovieArrays {
 
     public ArrayList<String> posterPath;

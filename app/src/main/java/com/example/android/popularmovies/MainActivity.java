@@ -3,8 +3,6 @@ package com.example.android.popularmovies;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
@@ -12,7 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -21,7 +18,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.android.popularmovies.MovieAdapter.MovieAdapterOnClickHandler;
-import com.example.android.popularmovies.utilities.Movie;
 import com.example.android.popularmovies.utilities.MovieArrays;
 import com.example.android.popularmovies.utilities.NetworkUtils;
 import com.example.android.popularmovies.utilities.TheMovieDBJsonUtils;
@@ -37,28 +33,40 @@ public class MainActivity extends AppCompatActivity
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
+    // RecyclerView + Adapter declarations
     private RecyclerView mRecyclerView;
     private MovieAdapter mMovieAdapter;
 
+    // Error Message TextView
     private TextView mErrorMessageDisplay;
 
+    // ProgressBar
     private ProgressBar mLoadingIndicator;
 
+    // String storing the sort query, set by default to "popular"
     private String sortQuery = "popular";
 
-    //private String[] mMovieId;
+    // Array containing all the movie IDs, used to know which item we clicked on
     private ArrayList<String> mMovieId;
-    //private Movie[] mMovie;
+
+    // MovieArray containing all the movies currently loaded
     private MovieArrays[] mMovie;
 
+    // Two different poster sizes, depending on the device orientation
     private String mPosterPortraitVersion = "w500";
     private String mPosterLandscapeVersion = "w342";
+
+    // Number of columns on the grid in the RecyclerView
     private int numColumns = 2;
 
+    // Variables to store the current page number and the total number of pages
     private String mCurrentPageNumber = "1"; // Initialization to 1
     private String mTotalPageNumber;
 
+    // Boolean to store the internet connection status
     private static boolean mConnected = true;
+
+    // Boolean to know add more data when we reach the bottom ONLY ONCE
     private boolean mBottomReachedOnce = true;
 
     @Override
@@ -81,9 +89,9 @@ public class MainActivity extends AppCompatActivity
             public void onClick(int index) {
                 if (index == 0) {
                     sortQuery = "popular";
-                    mMovieAdapter.setMovieData(null);
-                    mCurrentPageNumber = "1";
-                    loadMovieData();
+                    mMovieAdapter.setMovieData(null);   // Clean the movie data
+                    mCurrentPageNumber = "1";           // Reset the current page number
+                    loadMovieData();                    // Reload the movie data
                 } else {
                     sortQuery = "top_rated";
                     mMovieAdapter.setMovieData(null);
@@ -101,9 +109,9 @@ public class MainActivity extends AppCompatActivity
         reload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mMovieAdapter.setMovieData(null);
-                mCurrentPageNumber = "1";
-                loadMovieData();
+                mMovieAdapter.setMovieData(null);   // Clean the movie data
+                mCurrentPageNumber = "1";           // Reset the current page number
+                loadMovieData();                    // Reload the movie data
             }
         });
         // SETTINGS BUTTON
@@ -111,22 +119,20 @@ public class MainActivity extends AppCompatActivity
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intentToStartSettingsActivity = new Intent(MainActivity.this, MainSettings.class);
+                Intent intentToStartSettingsActivity = new Intent(MainActivity.this, MainSettings.class); // Launch Settings Activity
                 startActivity(intentToStartSettingsActivity);
             }
         });
 
-        /*
-         * Using findViewById, we get a reference to our RecyclerView from xml. This allows us to
-         * do things like set the adapter of the RecyclerView and toggle the visibility.
-         */
+        // RecyclerView reference
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_movies);
 
-        /* This TextView is used to display errors and will be hidden if there are no errors */
+        // Error message reference
         mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display);
 
         /*
          * GridLayoutManager declaration for our movie posters. Limited to 2 columns
+         * A custom GridLayoutManager is used to prevent a bug explained in the class
          */
         final CustomGridLayoutManager layoutManager
                 = new CustomGridLayoutManager(this, numColumns, GridLayoutManager.VERTICAL, false);
@@ -139,6 +145,7 @@ public class MainActivity extends AppCompatActivity
          */
         mRecyclerView.setHasFixedSize(false);
 
+        // OnScrollListener added to the RecyclerView to know when the user reached the bottom
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -146,15 +153,15 @@ public class MainActivity extends AppCompatActivity
                 int totalItemCount = layoutManager.getItemCount();
                 int pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
 
-                if (pastVisibleItems + visibleItemCount == totalItemCount && !mBottomReachedOnce) {
-                    Log.e(TAG, "Bottom reached!");
-                    loadMoreMovieData();
-                    mBottomReachedOnce = true;
+                if (pastVisibleItems + visibleItemCount == totalItemCount && !mBottomReachedOnce) { // If we reach the bottom
+                    Log.e(TAG, "Bottom reached!");  // Log the event
+                    loadMoreMovieData();            // Load more data (20 more movies)
+                    mBottomReachedOnce = true;      // Block the access for 1 second, to prevent the load to happen 10 times
                 }
             }
         });
 
-        /*x
+        /*
          * The MovieAdapter is responsible for linking our movie data with the Views that
          * will end up displaying our movie data.
          */
@@ -169,7 +176,7 @@ public class MainActivity extends AppCompatActivity
          */
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
 
-        /* Once all of our views are setup, we can load the weather data. */
+        /* Once all of our views are setup, we can load the movie data. */
         loadMovieData();
     }
 
@@ -207,6 +214,10 @@ public class MainActivity extends AppCompatActivity
         new FetchMovieTask().execute(sortQuery);
     }
 
+    /**
+     * This method will get sort query from the user, and then tell some
+     * background method to get more movie data in the background.
+     */
     private void loadMoreMovieData() {
         showMovieDataView();
 
@@ -214,19 +225,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
-     * This method will check the internet connection
-     */
-    public boolean isOnline() {
-        ConnectivityManager cm =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnectedOrConnecting();
-    }
-
-    /**
      * This method will change mConnected according to the internet connection
      */
-    static Handler connectionHandler = new Handler() {
+    private static Handler connectionHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             if (msg.what != 1) { // If not connected
@@ -246,13 +247,15 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onClick(String movieID) {
         int adapterPosition = mMovieAdapter.adapterPosition;
-        //String movieId = mMovieId[adapterPosition];
         String movieId = mMovieId.get(adapterPosition);
 
+        // Open the Detail Movie activity
         Intent intentToStartMovieDetailActivity = new Intent(this, MovieDetails.class);
 
+        // Add the movie ID in the Extra
         intentToStartMovieDetailActivity.putExtra(Intent.EXTRA_TEXT, movieId);
 
+        // Only start the activity if the internet connexion is on
         if (mConnected) {
             startActivity(intentToStartMovieDetailActivity);
         } else {
@@ -279,18 +282,18 @@ public class MainActivity extends AppCompatActivity
         /* Hide the current data */
         mRecyclerView.setVisibility(View.INVISIBLE);
         /* Chose which error message to display */
-        if (!mConnected) {
+        if (!mConnected) { // If the internet connexion is lost
             mErrorMessageDisplay.setText(R.string.error_message_internet);
-        } else if (!NetworkUtils.isApiKeyOn()) {
+        } else if (!NetworkUtils.isApiKeyOn()) { // If the API Key is empty
             mErrorMessageDisplay.setText(R.string.error_message_api_key);
-        } else {
+        } else { // For any other problem
             mErrorMessageDisplay.setText(R.string.error_message_common);
         }
         /* Show the error view */
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
     }
 
-    // This method will get the 20 first movies in the background and send them to the Adapter
+    // This method will load the 20 first movies in the background and send them to the Adapter
     public class FetchMovieTask extends AsyncTask<String, Void, MovieArrays[]> {
 
         @Override
@@ -306,21 +309,26 @@ public class MainActivity extends AppCompatActivity
                 return null;
             }
 
+            // If there's no internet connexion, stop
             isNetworkAvailable(connectionHandler, 5000);
             if (!mConnected) {
                 return null;
             }
 
+            // If the API Key is empty, stop
             if (!NetworkUtils.isApiKeyOn()) {
                 return null;
             }
 
+            // Create the URL with the currentPageNumber
             URL movieRequestUrl = NetworkUtils.buildUrl(sortQuery, mCurrentPageNumber);
 
             try {
+                // Get the full HTTP response
                 String jsonMovieResponse = NetworkUtils
                         .getResponseFromHttpUrl(movieRequestUrl);
 
+                // Adapt the poster size, according to the device orientation
                 String mPosterVersion;
                 if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
                     mPosterVersion = mPosterLandscapeVersion;
@@ -332,9 +340,11 @@ public class MainActivity extends AppCompatActivity
                 MovieArrays JsonMovieData = TheMovieDBJsonUtils
                         .getMovieDataFromJson(MainActivity.this, jsonMovieResponse, mPosterVersion);
 
+                // Initialize the total page number
                 mTotalPageNumber = JsonMovieData.totalPageNumber;
                 int totalPageNumberInt = Integer.valueOf(mTotalPageNumber);
 
+                // Instantiate all the variables that we need
                 mMovie = new MovieArrays[totalPageNumberInt];
 
                 for (int i = 0; i < totalPageNumberInt; i++) {
@@ -350,6 +360,7 @@ public class MainActivity extends AppCompatActivity
                     mMovie[i].voteAverage = new ArrayList<String>();
                 }
 
+                // Copy the data from the Json to our global mMovie variable
                 mMovie[0].posterPath = JsonMovieData.posterPath;
                 mMovie[0].title = JsonMovieData.title;
                 mMovie[0].id = JsonMovieData.id;
@@ -360,10 +371,13 @@ public class MainActivity extends AppCompatActivity
                 mMovie[0].voteCount = JsonMovieData.voteCount;
                 mMovie[0].voteAverage = JsonMovieData.voteAverage;
 
+                // Copy the ID data from the Json to the global mMovieId variable
                 mMovieId = mMovie[0].id;
 
+                // Add 1 to the mCurrentPageNumber
                 mCurrentPageNumber = "2";
 
+                // Return the global mMovie data variable for it to be used in onPostExecute
                 return mMovie;
 
             } catch (Exception e) {
@@ -375,9 +389,9 @@ public class MainActivity extends AppCompatActivity
         @Override
         protected void onPostExecute(MovieArrays[] movieData) {
             mLoadingIndicator.setVisibility(View.INVISIBLE);
-            if (movieData != null) {
+            if (movieData != null) { // If the movie data has been read
                 showMovieDataView();
-                mMovieAdapter.setMovieData(movieData[0]);
+                mMovieAdapter.setMovieData(movieData[0]); // Send the data to the Adapter
 
                 // Once everything is loaded, allow the scroll feature again after 1 second
                 Handler handler = new Handler();
@@ -408,11 +422,11 @@ public class MainActivity extends AppCompatActivity
                 return null;
             }
 
-            // Set the integer versions of the PageNumbers
+            // Initialize the current and total page number
             int currentPageNumberInt = Integer.valueOf(mCurrentPageNumber);
             int totalPageNumberInt = Integer.valueOf(mTotalPageNumber);
 
-            // If we reached the last page, then we stop
+            // If we reached the last page, stop
             if (currentPageNumberInt > totalPageNumberInt) {
                 return null;
             }
@@ -421,10 +435,11 @@ public class MainActivity extends AppCompatActivity
             URL movieRequestUrl = NetworkUtils.buildUrl(sortQuery, mCurrentPageNumber);
 
             try {
+                // Get the full HTTP response
                 String jsonMovieResponse = NetworkUtils
                         .getResponseFromHttpUrl(movieRequestUrl);
 
-                // Check the orientation of the phone to change the poster sizes accordingly
+                // Adapt the poster size, according to the device orientation
                 String mPosterVersion;
                 if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
                     mPosterVersion = mPosterLandscapeVersion;
@@ -436,7 +451,7 @@ public class MainActivity extends AppCompatActivity
                 MovieArrays JsonMovieData = TheMovieDBJsonUtils
                         .getMovieDataFromJson(MainActivity.this, jsonMovieResponse, mPosterVersion);
 
-                // Get all the data from the new page in the Json file
+                // Copy the new data from the Json to our global mMovie variable
                 mMovie[currentPageNumberInt-1].posterPath = JsonMovieData.posterPath;
                 mMovie[currentPageNumberInt-1].title = JsonMovieData.title;
                 mMovie[currentPageNumberInt-1].id = JsonMovieData.id;
@@ -466,8 +481,8 @@ public class MainActivity extends AppCompatActivity
             if (movieData != null) {
                 int currentPageNumberInt = Integer.valueOf(mCurrentPageNumber);
 
-                // Send the 20 new movies to the Adapter for it to add them to the RecyclerView
-                mMovieAdapter.addMovieData(movieData[currentPageNumberInt-1], currentPageNumberInt);
+                // Send the 20 new movies to the Adapter
+                mMovieAdapter.addMovieData(movieData[currentPageNumberInt-1]);
 
                 // Increase the currentPageNumber
                 currentPageNumberInt += 1;

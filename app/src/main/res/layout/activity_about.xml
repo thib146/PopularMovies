@@ -7,6 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!-- BEGIN TOOLBAR -->
     <ImageView
         android:id="@+id/about_toolbar"
         android:layout_width="0dp"
@@ -39,7 +40,9 @@
         app:layout_constraintLeft_toRightOf="@+id/iv_back_about"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"/>
+    <!-- END TOOLBAR -->
 
+    <!-- BEGIN MAIN CONTENT -->
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -138,5 +141,6 @@
         </android.support.constraint.ConstraintLayout>
 
     </ScrollView>
+    <!-- END MAIN CONTENT -->
 
 </android.support.constraint.ConstraintLayout>

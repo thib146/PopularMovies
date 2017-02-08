@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.android.popularmovies.utilities.Movie;
 import com.example.android.popularmovies.utilities.MovieArrays;
 import com.squareup.picasso.Picasso;
 
@@ -20,13 +19,15 @@ import java.util.ArrayList;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder> {
 
-    //private MainActivity.Movie mMoviesData;
+    // Global variable containing all the movies currently loaded
+    // -- Arrays are used to be able to easily add more movies as the user scrolls down
     private MovieArrays mMoviesData;
 
+    // Global int for the position of an item
     public int adapterPosition;
 
     /*
-     * An on-click handleF that we've defined to make it easy for an Activity to interface with
+     * An on-click handler that we've defined to make it easy for an Activity to interface with
      * our RecyclerView
      */
     private final MovieAdapterOnClickHandler mClickHandler;
@@ -70,7 +71,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         @Override
         public void onClick(View v) {
             adapterPosition = getAdapterPosition();
-            //String movieDetails = mMoviesData.posterPath[adapterPosition];
             String movieDetails = mMoviesData.posterPath.get(adapterPosition);
             mClickHandler.onClick(movieDetails);
         }
@@ -107,12 +107,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
      */
     @Override
     public void onBindViewHolder(MovieAdapterViewHolder movieAdapterViewHolder, int position) {
-        //String oneMoviePoster = mMoviesData.posterPath[position];
         String oneMoviePoster = mMoviesData.posterPath.get(position);
-        //String oneMovieTitle = mMoviesData.title[position];
         String oneMovieTitle = mMoviesData.title.get(position);
         Context context = movieAdapterViewHolder.mMovieImageView.getContext();
 
+        // Display the movie poster and the movie title in the RecyclerView
         Picasso.with(context).load(oneMoviePoster).into(movieAdapterViewHolder.mMovieImageView);
         movieAdapterViewHolder.mMovieTitleTextView.setText(oneMovieTitle);
     }
@@ -138,6 +137,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
      */
     public void setMovieData(MovieArrays moviesData) {
 
+        // Instantiate of all the variable that we need
         mMoviesData = new MovieArrays();
         mMoviesData.posterPath = new ArrayList<String>();
         mMoviesData.description = new ArrayList<String>();
@@ -149,11 +149,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         mMoviesData.voteCount = new ArrayList<String>();
         mMoviesData.voteAverage = new ArrayList<String>();
 
+        // Check if the data passed is null
         if (moviesData == null) {
             mMoviesData = null;
             return;
         }
 
+        // Add the data passed (moviesData) to each member of mMovieData at the right position
         for (int i=0; i<20; i++) {
             mMoviesData.posterPath.add(i, moviesData.posterPath.get(i));
             mMoviesData.description.add(i, moviesData.description.get(i));
@@ -169,7 +171,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         notifyDataSetChanged();
     }
 
-    public void addMovieData(MovieArrays moviesData, int currentPageNumber) {
+    /**
+     * This method is used to set a new list movies on the MovieAdapter when the user reaches the
+     * bottom of the RecyclerView
+     *
+     * @param moviesData The new movie data to be displayed.
+     */
+    public void addMovieData(MovieArrays moviesData) {
 
         if (moviesData == null) {
             return;

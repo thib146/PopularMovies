@@ -10,6 +10,7 @@
     android:id="@+id/activity_main"
     tools:context="com.example.android.popularmovies.MainActivity">
 
+    <!-- BEGIN TOOLBAR -->
     <ImageView
         android:id="@+id/main_toolbar"
         android:layout_width="0dp"
@@ -19,6 +20,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"/>
 
+    <!-- REFRESH MENU BUTTON -->
     <ImageView
         android:id="@+id/iv_refresh_menu"
         android:layout_width="wrap_content"
@@ -30,6 +32,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"/>
 
+    <!-- APP TITLE -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="0dp"
@@ -42,6 +45,7 @@
         app:layout_constraintRight_toRightOf="@+id/main_toolbar"
         android:layout_marginTop="16dp"/>
 
+    <!-- SETTINGS MENU BUTTON -->
     <ImageView
         android:id="@+id/iv_settings_menu"
         android:layout_width="wrap_content"
@@ -53,6 +57,7 @@
         android:layout_marginRight="16dp"
         android:layout_marginEnd="16dp"/>
 
+    <!-- CUSTOM SEGMENTED BUTTON -->
     <com.example.android.popularmovies.widget.SegmentedButton
         android:id="@+id/segmented"
         android:layout_width="230dp"
@@ -72,7 +77,10 @@
         app:layout_constraintLeft_toLeftOf="@+id/main_toolbar"
         app:layout_constraintRight_toRightOf="@+id/main_toolbar"
         android:layout_marginTop="10dp"/>
+    <!-- END TOOLBAR -->
 
+    <!-- BEGIN MAIN CONTENT -->
+    <!-- RECYCLER VIEW -->
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerview_movies"
         android:layout_width="0dp"
@@ -81,6 +89,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
 
+    <!-- ERROR MESSAGE -->
     <TextView
         android:id="@+id/tv_error_message_display"
         android:layout_width="wrap_content"
@@ -91,6 +100,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
 
+    <!-- LOADING INDICATOR -->
     <ProgressBar
         android:id="@+id/pb_loading_indicator"
         android:layout_height="48dp"
@@ -100,5 +110,6 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
+    <!-- END MAIN CONTENT -->
 
 </android.support.constraint.ConstraintLayout>
