@@ -3,21 +3,21 @@
 
     <item
         is-multidex="true"
-        jar="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\exploded-aar\com.android.support\support-media-compat\25.1.0\jars\classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="25.0.2"
-        sha1="f02263e35e52668dd17b73bf961437e3d562b35f">
-        <dex dex="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-media-compat-25.1.0_95601d64be1aa8e4a73435a2ded5b040d1032284\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
         jar="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\exploded-aar\com.android.support\recyclerview-v7\25.1.0\jars\classes.jar"
         jumboMode="true"
         optimize="true"
         revision="25.0.2"
         sha1="b266c8faa5af72e579b9da36ef35053ffed6ac64">
         <dex dex="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-recyclerview-v7-25.1.0_afe811998d533cd0611895680f1e0d6f078c0b12\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\exploded-aar\com.android.support\support-media-compat\25.1.0\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="f02263e35e52668dd17b73bf961437e3d562b35f">
+        <dex dex="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-media-compat-25.1.0_95601d64be1aa8e4a73435a2ded5b040d1032284\classes.dex" />
     </item>
     <item
         is-multidex="true"
@@ -106,7 +106,7 @@
         jumboMode="true"
         optimize="true"
         revision="25.0.2"
-        sha1="7b6c6832e3118b9e86a70a83f4b0e18a6e7a7e5a">
+        sha1="4cc000f444b70b58069617f95c71c04561c73fab">
         <dex dex="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run_8bddef3d10e18a63224594eafd585df80f890319\classes.dex" />
     </item>
     <item
@@ -115,7 +115,7 @@
         jumboMode="true"
         optimize="true"
         revision="25.0.2"
-        sha1="b761748041c9945b265b22be59c1824cba8279ff">
+        sha1="6e7d854024268917bcf3755888aa29a1cb933b72">
         <dex dex="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run-bootstrap_44505a325662db7c6d1ff6902e812a13c91477c8\classes.dex" />
     </item>
     <item

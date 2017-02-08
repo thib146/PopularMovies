@@ -101,10 +101,9 @@ public class MainActivity extends AppCompatActivity
         reload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //mMovieAdapter.setMovieData(null);
-                //mCurrentPageNumber = "1";
-                //loadMovieData();
-                loadMoreMovieData();
+                mMovieAdapter.setMovieData(null);
+                mCurrentPageNumber = "1";
+                loadMovieData();
             }
         });
         // SETTINGS BUTTON
@@ -184,6 +183,7 @@ public class MainActivity extends AppCompatActivity
         public boolean supportsPredictiveItemAnimations() {
             return false;
         }
+
         public CustomGridLayoutManager(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
             super(context, attrs, defStyleAttr, defStyleRes);
         }
@@ -212,17 +212,6 @@ public class MainActivity extends AppCompatActivity
 
         new FetchMoreMovieTask().execute(sortQuery);
     }
-
-//    private void loadNextPageMovieData() {
-//        mMovieAdapter = new MovieAdapter(this);
-//
-//        /* Setting the adapter attaches it to the RecyclerView in our layout. */
-//        mRecyclerView.setAdapter(mMovieAdapter);
-//
-//        showMovieDataView();
-//
-//        new FetchMoreMovieTask().execute(sortQuery);
-//    }
 
     /**
      * This method will check the internet connection
@@ -282,18 +271,6 @@ public class MainActivity extends AppCompatActivity
         mRecyclerView.setVisibility(View.VISIBLE);
     }
 
-//    class CustomScrollListener extends RecyclerView.OnScrollListener {
-//
-//        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-//            int visibleItemCount = layoutManager.getChildCount();
-//            int totalItemCount = mLayoutManager.getItemCount();
-//            int pastVisibleItems = mLayoutManager.findFirstVisibleItemPosition();
-//            if (pastVisibleItems + visibleItemCount >= totalItemCount) {
-//                //End of list
-//            }
-//        }
-//    }
-
     /**
      * This method will make the error message visible and hide the movie
      * View.
@@ -304,6 +281,8 @@ public class MainActivity extends AppCompatActivity
         /* Chose which error message to display */
         if (!mConnected) {
             mErrorMessageDisplay.setText(R.string.error_message_internet);
+        } else if (!NetworkUtils.isApiKeyOn()) {
+            mErrorMessageDisplay.setText(R.string.error_message_api_key);
         } else {
             mErrorMessageDisplay.setText(R.string.error_message_common);
         }
@@ -332,6 +311,10 @@ public class MainActivity extends AppCompatActivity
                 return null;
             }
 
+            if (!NetworkUtils.isApiKeyOn()) {
+                return null;
+            }
+
             URL movieRequestUrl = NetworkUtils.buildUrl(sortQuery, mCurrentPageNumber);
 
             try {
@@ -353,6 +336,7 @@ public class MainActivity extends AppCompatActivity
                 int totalPageNumberInt = Integer.valueOf(mTotalPageNumber);
 
                 mMovie = new MovieArrays[totalPageNumberInt];
+
                 for (int i = 0; i < totalPageNumberInt; i++) {
                     mMovie[i] = new MovieArrays();
                     mMovie[i].posterPath = new ArrayList<String>();
@@ -367,7 +351,7 @@ public class MainActivity extends AppCompatActivity
                 }
 
                 mMovie[0].posterPath = JsonMovieData.posterPath;
-                mMovie[0].title = JsonMovieData.originalTitle;
+                mMovie[0].title = JsonMovieData.title;
                 mMovie[0].id = JsonMovieData.id;
                 mMovie[0].description = JsonMovieData.description;
                 mMovie[0].releaseDate = JsonMovieData.releaseDate;
@@ -454,7 +438,7 @@ public class MainActivity extends AppCompatActivity
 
                 // Get all the data from the new page in the Json file
                 mMovie[currentPageNumberInt-1].posterPath = JsonMovieData.posterPath;
-                mMovie[currentPageNumberInt-1].title = JsonMovieData.originalTitle;
+                mMovie[currentPageNumberInt-1].title = JsonMovieData.title;
                 mMovie[currentPageNumberInt-1].id = JsonMovieData.id;
                 mMovie[currentPageNumberInt-1].description = JsonMovieData.description;
                 mMovie[currentPageNumberInt-1].releaseDate = JsonMovieData.releaseDate;

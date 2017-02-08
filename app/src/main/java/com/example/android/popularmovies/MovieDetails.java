@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import static com.example.android.popularmovies.utilities.NetworkUtils.isNetworkAvailable;
 
 /**
- * Created by thiba on 21/01/2017.
+ * Created by thib146 on 21/01/2017.
  */
 
 public class MovieDetails extends AppCompatActivity {
@@ -40,6 +40,7 @@ public class MovieDetails extends AppCompatActivity {
     private ConstraintLayout mDetailLayout;
 
     private TextView mMovieTitle;
+    private TextView mMovieOriginalTitle;
     private TextView mReleaseDate;
     private TextView mMovieDescription;
     private TextView mMovieRatings;
@@ -80,6 +81,7 @@ public class MovieDetails extends AppCompatActivity {
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator_detail);
 
         mMovieTitle = (TextView) findViewById(R.id.tv_movie_title_details);
+        mMovieOriginalTitle = (TextView) findViewById(R.id.tv_movie_original_title_details);
         mReleaseDate = (TextView) findViewById(R.id.tv_date_details);
         mMovieDescription = (TextView) findViewById(R.id.tv_description_details);
         mMovieRatings = (TextView) findViewById(R.id.tv_ratings_details);
@@ -125,16 +127,47 @@ public class MovieDetails extends AppCompatActivity {
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
     }
 
-    public class Movie {
-        public String posterPath;
-        public String description;
-        public String releaseDate;
-        public String id;
-        public String title;
-        public String originalTitle;
-        public String popularity;
-        public String voteCount;
-        public String voteAverage;
+    private String correctReleaseDate(String date) {
+        String[] releaseDateSep = date.split("-");
+        switch (releaseDateSep[1]) {
+            case "01":
+                releaseDateSep[1] = getString(R.string.january);
+                break;
+            case "02":
+                releaseDateSep[1] = getString(R.string.february);
+                break;
+            case "03":
+                releaseDateSep[1] = getString(R.string.march);
+                break;
+            case "04":
+                releaseDateSep[1] = getString(R.string.april);
+                break;
+            case "05":
+                releaseDateSep[1] = getString(R.string.may);
+                break;
+            case "06":
+                releaseDateSep[1] = getString(R.string.june);
+                break;
+            case "07":
+                releaseDateSep[1] = getString(R.string.july);
+                break;
+            case "08":
+                releaseDateSep[1] = getString(R.string.august);
+                break;
+            case "09":
+                releaseDateSep[1] = getString(R.string.september);
+                break;
+            case "10":
+                releaseDateSep[1] = getString(R.string.october);
+                break;
+            case "11":
+                releaseDateSep[1] = getString(R.string.november);
+                break;
+            case "12":
+                releaseDateSep[1] = getString(R.string.december);
+                break;
+        }
+        return releaseDateSep[2] + " " + releaseDateSep[1] + " " + releaseDateSep[0];
     }
 
     public class FetchMovieDetailTask extends AsyncTask<String, Void, MovieArrays> {
@@ -163,14 +196,11 @@ public class MovieDetails extends AppCompatActivity {
                 String jsonMovieResponse = NetworkUtils
                         .getResponseFromHttpUrl(movieRequestUrl);
 
-                //Movie JsonMovieData = TheMovieDBJsonUtils
-                //.getMovieDataFromJson(MovieDetails.this, jsonMovieResponse, mPosterVersion);
-
                 MovieArrays JsonMovieData = TheMovieDBJsonUtils
                         .getMovieDataFromJson(MovieDetails.this, jsonMovieResponse, mPosterVersion);
 
-                //Movie movie = new Movie();
                 MovieArrays movie = new MovieArrays();
+
                 movie.posterPath = new ArrayList<>();
                 movie.title = new ArrayList<>();
                 movie.description = new ArrayList<>();
@@ -178,25 +208,12 @@ public class MovieDetails extends AppCompatActivity {
                 movie.releaseDate = new ArrayList<>();
                 movie.voteAverage = new ArrayList<>();
 
-//                movie.posterPath = JsonMovieData.posterPath[0];
-//                movie.title = JsonMovieData.originalTitle[0];
-//                movie.description = JsonMovieData.description[0];
-//                //movie.id = JsonMovieData.id[0];
-//                movie.originalTitle = JsonMovieData.originalTitle[0];
-//                //movie.popularity = JsonMovieData.popularity[0];
-//                movie.releaseDate = JsonMovieData.releaseDate[0];
-//                movie.voteAverage = JsonMovieData.voteAverage[0];
-//                //movie.voteCount = JsonMovieData.voteCount[0];
-
                 movie.posterPath = JsonMovieData.posterPath;
-                movie.title = JsonMovieData.originalTitle;
+                movie.title = JsonMovieData.title;
                 movie.description = JsonMovieData.description;
-                //movie.id = JsonMovieData.id;
                 movie.originalTitle = JsonMovieData.originalTitle;
-                //movie.popularity = JsonMovieData.popularity;
                 movie.releaseDate = JsonMovieData.releaseDate;
                 movie.voteAverage = JsonMovieData.voteAverage;
-                //movie.voteCount = JsonMovieData.voteCount;
 
                 return movie;
 
@@ -215,16 +232,11 @@ public class MovieDetails extends AppCompatActivity {
                 Resources resources = getResources();
                 Context context = mMoviePoster.getContext();
 
-                //Picasso.with(context).load(movieData.posterPath).into(mMoviePoster);
                 Picasso.with(context).load(movieData.posterPath.get(0)).into(mMoviePoster);
 
-//                mMovieTitle.setText(movieData.title);
-//                mReleaseDate.setText(String.format(resources.getString(R.string.movie_release_date), movieData.releaseDate));
-//                mMovieDescription.setText(String.format(resources.getString(R.string.movie_description), movieData.description));
-//                mMovieRatings.setText(String.format(resources.getString(R.string.movie_ratings), movieData.voteAverage));
-
                 mMovieTitle.setText(movieData.title.get(0));
-                mReleaseDate.setText(String.format(resources.getString(R.string.movie_release_date), movieData.releaseDate.get(0)));
+                mMovieOriginalTitle.setText(String.format(resources.getString(R.string.movie_original_title), movieData.originalTitle.get(0)));
+                mReleaseDate.setText(String.format(resources.getString(R.string.movie_release_date), correctReleaseDate(movieData.releaseDate.get(0))));
                 mMovieDescription.setText(String.format(resources.getString(R.string.movie_description), movieData.description.get(0)));
                 mMovieRatings.setText(String.format(resources.getString(R.string.movie_ratings), movieData.voteAverage.get(0)));
             } else {

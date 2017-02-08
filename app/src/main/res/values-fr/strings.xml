@@ -9,14 +9,31 @@
         Une erreur est survenue. Veuillez rééssayer en touchant le bouton de rafraîchissement.
     </string>
     <string name="error_message_internet">
-        Il semble que la connection internet ait été arrêtée. Veuillez vérifier la connection de votre appareil et rééssayer en touchant le bouton de rafraîchissement.
+        Il semble que la connexion internet ait été arrêtée. Veuillez vérifier la connexion de votre appareil et rééssayer en touchant le bouton de rafraîchissement.
+    </string>
+    <string name="error_message_api_key">
+        La clé API est vide. Veuillez saisir votre clé API dans le fichier "NetworkUtils.java" et recompiler le code.
     </string>
 
-    <string name="movie_release_date">Date de sortie: %1$s</string>
-    <string name="movie_ratings">Notes: %1$s/10</string>
+    <string name="movie_original_title">Titre Original: %1$s</string>
+    <string name="movie_release_date">Date de Sortie: %1$s</string>
+    <string name="movie_ratings">Notes des Utilisateurs: %1$s/10</string>
 
     <string name="popular_button">Populaires</string>
     <string name="ratings_button">Mieux Notés</string>
+
+    <string name="january">janvier</string>
+    <string name="february">février</string>
+    <string name="march">mars</string>
+    <string name="april">avril</string>
+    <string name="june">juin</string>
+    <string name="may">mai</string>
+    <string name="july">juillet</string>
+    <string name="august">août</string>
+    <string name="september">septembre</string>
+    <string name="october">octobre</string>
+    <string name="november">novembre</string>
+    <string name="december">décembre</string>
 
     <string name="app_about_intro">Cette application a été créée par</string>
     <string name="app_author_website_label">Site internet:</string>

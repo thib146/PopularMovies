@@ -137,7 +137,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
      * @param moviesData The new movie data to be displayed.
      */
     public void setMovieData(MovieArrays moviesData) {
-        //mMoviesData = moviesData;
 
         mMoviesData = new MovieArrays();
         mMoviesData.posterPath = new ArrayList<String>();
@@ -190,9 +189,4 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         }
         notifyDataSetChanged();
     }
-
-    //public void addMovieData(Movie moviesData) {
-    //    mMoviesData = moviesData;
-    //    notifyDataSetChanged();
-    //}
 }

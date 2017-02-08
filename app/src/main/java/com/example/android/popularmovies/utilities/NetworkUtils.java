@@ -29,7 +29,7 @@ public final class NetworkUtils {
 
     private static final String TMDB_PAGE_NUMBER = "page";
 
-    public static String deviceLanguage = Locale.getDefault().getLanguage();
+    private static String deviceLanguage = Locale.getDefault().getLanguage();
 
     /**
      * This is where the API KEY from the movieDB is required
@@ -63,6 +63,10 @@ public final class NetworkUtils {
         Log.v(TAG, "Built URI " + url);
 
         return url;
+    }
+
+    public static boolean isApiKeyOn() {
+        return !API_KEY.equals("");
     }
 
     /**
