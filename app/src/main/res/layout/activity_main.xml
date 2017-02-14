@@ -18,14 +18,14 @@
         android:background="@color/colorPrimary"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"/>
+        app:layout_constraintLeft_toLeftOf="parent" />
 
     <!-- REFRESH MENU BUTTON -->
     <ImageView
         android:id="@+id/iv_refresh_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/reload2"
+        android:src="@drawable/ic_refresh_black_24dp"
         app:layout_constraintTop_toTopOf="@+id/main_toolbar"
         app:layout_constraintLeft_toLeftOf="@+id/main_toolbar"
         android:layout_marginTop="16dp"
@@ -35,7 +35,7 @@
     <!-- APP TITLE -->
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:text="@string/app_name"
         android:textColor="@color/colorMainToolbarText"
         android:textSize="20sp"
@@ -50,7 +50,7 @@
         android:id="@+id/iv_settings_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/settings2"
+        android:src="@drawable/ic_settings_black_24dp"
         app:layout_constraintTop_toTopOf="@+id/main_toolbar"
         app:layout_constraintRight_toRightOf="@+id/main_toolbar"
         android:layout_marginTop="16dp"
@@ -60,7 +60,7 @@
     <!-- CUSTOM SEGMENTED BUTTON -->
     <com.example.android.popularmovies.widget.SegmentedButton
         android:id="@+id/segmented"
-        android:layout_width="230dp"
+        android:layout_width="350dp"
         android:layout_height="36dp"
         segmentedbutton:gradientColorOnStart="@color/colorPrimary"
         segmentedbutton:gradientColorOnEnd="@color/colorPrimary"
@@ -84,27 +84,31 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerview_movies"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         app:layout_constraintTop_toBottomOf="@+id/main_toolbar"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <!-- ERROR MESSAGE -->
     <TextView
         android:id="@+id/tv_error_message_display"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textSize="20sp"
         android:visibility="invisible"
         app:layout_constraintTop_toBottomOf="@+id/main_toolbar"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"/>
 
     <!-- LOADING INDICATOR -->
     <ProgressBar
         android:id="@+id/pb_loading_indicator"
-        android:layout_height="48dp"
-        android:layout_width="48dp"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
         android:visibility="invisible"
         app:layout_constraintTop_toBottomOf="@+id/main_toolbar"
         app:layout_constraintLeft_toLeftOf="parent"

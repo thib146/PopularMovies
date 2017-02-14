@@ -1,6 +1,7 @@
 package com.example.android.popularmovies;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.android.popularmovies.data.PopularMoviesContract;
 import com.example.android.popularmovies.utilities.MovieArrays;
 import com.squareup.picasso.Picasso;
 
@@ -25,6 +27,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
     // Global int for the position of an item
     public int adapterPosition;
+
+    private Cursor mCursor;
 
     /*
      * An on-click handler that we've defined to make it easy for an Activity to interface with
@@ -71,8 +75,17 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         @Override
         public void onClick(View v) {
             adapterPosition = getAdapterPosition();
-            String movieDetails = mMoviesData.posterPath.get(adapterPosition);
-            mClickHandler.onClick(movieDetails);
+            String sortQuery = MainActivity.getSortQuery();
+
+            if (sortQuery.equals("favorites")) {
+                mCursor.moveToPosition(adapterPosition);
+                int movieId = mCursor.getInt(MainActivity.INDEX_MOVIE_ID);
+                String movieIdString = String.valueOf(movieId);
+                mClickHandler.onClick(movieIdString);
+            } else {
+                String movieDetails = mMoviesData.posterPath.get(adapterPosition);
+                mClickHandler.onClick(movieDetails);
+            }
         }
     }
 
@@ -107,13 +120,33 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
      */
     @Override
     public void onBindViewHolder(MovieAdapterViewHolder movieAdapterViewHolder, int position) {
-        String oneMoviePoster = mMoviesData.posterPath.get(position);
-        String oneMovieTitle = mMoviesData.title.get(position);
-        Context context = movieAdapterViewHolder.mMovieImageView.getContext();
+        String sortQuery = MainActivity.getSortQuery();
 
-        // Display the movie poster and the movie title in the RecyclerView
-        Picasso.with(context).load(oneMoviePoster).into(movieAdapterViewHolder.mMovieImageView);
-        movieAdapterViewHolder.mMovieTitleTextView.setText(oneMovieTitle);
+        if (sortQuery.equals("favorites")) {
+            mCursor.moveToPosition(position);
+
+            String oneMoviePoster = mCursor.getString(MainActivity.INDEX_POSTER_PATH);
+            String oneMovieTitle = mCursor.getString(MainActivity.INDEX_TITLE);
+            Context context = movieAdapterViewHolder.mMovieImageView.getContext();
+
+            // Display the movie poster and the movie title in the RecyclerView
+            Picasso.with(context).load(oneMoviePoster).into(movieAdapterViewHolder.mMovieImageView);
+            movieAdapterViewHolder.mMovieTitleTextView.setText(oneMovieTitle);
+        } else {
+            String oneMoviePoster = mMoviesData.posterPath.get(position);
+            String oneMovieTitle = mMoviesData.title.get(position);
+            Context context = movieAdapterViewHolder.mMovieImageView.getContext();
+
+            // Display the movie poster and the movie title in the RecyclerView
+            Picasso.with(context).load(oneMoviePoster).into(movieAdapterViewHolder.mMovieImageView);
+            int sdk = android.os.Build.VERSION.SDK_INT;
+            if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                movieAdapterViewHolder.mMovieImageView.setBackgroundDrawable(null);
+            } else {
+                //movieAdapterViewHolder.mMovieImageView.setBackground(null);
+            }
+            movieAdapterViewHolder.mMovieTitleTextView.setText(oneMovieTitle);
+        }
     }
 
     /**
@@ -124,8 +157,28 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
      */
     @Override
     public int getItemCount() {
-        if (null == mMoviesData) return 0;
-        return mMoviesData.posterPath.size();
+        String sortQuery = MainActivity.getSortQuery();
+
+        if (sortQuery.equals("favorites")) {
+            if (null == mCursor) return 0;
+            return mCursor.getCount();
+        } else {
+            if (null == mMoviesData) return 0;
+            return mMoviesData.posterPath.size();
+        }
+    }
+
+    /**
+     * Swaps the cursor used by the ForecastAdapter for its weather data. This method is called by
+     * MainActivity after a load has finished, as well as when the Loader responsible for loading
+     * the weather data is reset. When this method is called, we assume we have a completely new
+     * set of data, so we call notifyDataSetChanged to tell the RecyclerView to update.
+     *
+     * @param newCursor the new cursor to use as ForecastAdapter's data source
+     */
+    void swapCursor(Cursor newCursor) {
+        mCursor = newCursor;
+        notifyDataSetChanged();
     }
 
     /**

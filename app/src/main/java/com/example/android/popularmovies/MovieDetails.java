@@ -1,20 +1,26 @@
 package com.example.android.popularmovies;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.database.Cursor;
+import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.android.popularmovies.data.PopularMoviesContract;
 import com.example.android.popularmovies.utilities.MovieArrays;
 import com.example.android.popularmovies.utilities.NetworkUtils;
 import com.example.android.popularmovies.utilities.TheMovieDBJsonUtils;
@@ -39,6 +45,14 @@ public class MovieDetails extends AppCompatActivity {
 
     private ConstraintLayout mDetailLayout;
 
+    // Global movie variable containing the movie data to be used for the Favorites list
+    private MovieArrays mMovie;
+
+    // Boolean to know if the movie is already saved in the Favorites
+    private boolean isFaved = true;
+
+    private Cursor mCursor;
+
     // Declare the UI objects
     private TextView mMovieTitle;
     private TextView mMovieOriginalTitle;
@@ -46,6 +60,8 @@ public class MovieDetails extends AppCompatActivity {
     private TextView mMovieDescription;
     private TextView mMovieRatings;
     private ImageView mMoviePoster;
+    private ImageView mFavoritesButton;
+    private ImageView mFavedButton;
 
     // Only this size of poster will be used
     private String mPosterVersion = "w185";
@@ -54,10 +70,44 @@ public class MovieDetails extends AppCompatActivity {
 
     private static boolean mConnected = true;
 
+    public static final String[] DETAIL_FAVORITES_PROJECTION = {
+            PopularMoviesContract.MovieEntry.COLUMN_MOVIE_ID,
+            PopularMoviesContract.MovieEntry.COLUMN_POSTER_PATH,
+            PopularMoviesContract.MovieEntry.COLUMN_TITLE
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
+
+        mFavoritesButton = (ImageView) findViewById(R.id.favorite_button_default);
+        mFavedButton = (ImageView) findViewById(R.id.favorite_button_clicked);
+
+        // Get the intent that started this Detailed View
+        Intent intentThatStartedThatActivity = getIntent();
+
+        // Get the ID that was passed though the intent
+        id = intentThatStartedThatActivity.getStringExtra(Intent.EXTRA_TEXT);
+
+        // Check if the movie is already a Favorite one by searching in the database
+        String[] mSelectionArgs = {""};
+        mSelectionArgs[0] = id;
+        mCursor = MovieDetails.this.getContentResolver().query(
+                PopularMoviesContract.MovieEntry.CONTENT_URI,
+                DETAIL_FAVORITES_PROJECTION,
+                PopularMoviesContract.MovieEntry.COLUMN_MOVIE_ID + " = ?",
+                mSelectionArgs,
+                null);
+        if (null == mCursor) {
+            Log.e(TAG, "The isFaved research provoked a prob");
+        } else if (mCursor.getCount() < 1) {
+            isFaved = false;
+            showFavoritesButton();
+        } else {
+            isFaved = true;
+            showFavedButton();
+        }
 
         /**
          * Management of menu buttons
@@ -71,14 +121,45 @@ public class MovieDetails extends AppCompatActivity {
             }
         });
 
+        // FAVORITE BUTTON
+        mFavoritesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ContentValues favValues = new ContentValues();
+
+                favValues.put(PopularMoviesContract.MovieEntry.COLUMN_MOVIE_ID, id);
+                favValues.put(PopularMoviesContract.MovieEntry.COLUMN_TITLE, mMovie.title.get(0));
+                favValues.put(PopularMoviesContract.MovieEntry.COLUMN_POSTER_PATH, mMovie.posterPath.get(0));
+
+                ArrayList<ContentValues> favValuesContent = new ArrayList<ContentValues>();
+                favValuesContent.add(favValues);
+
+                MovieDetails.this.getContentResolver().bulkInsert(
+                        PopularMoviesContract.MovieEntry.CONTENT_URI,
+                        favValuesContent.toArray(new ContentValues[1]));
+
+                isFaved = true;
+                showFavedButton();
+            }
+        });
+        mFavedButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String[] mSelectionArgs = {""};
+                mSelectionArgs[0] = id;
+                MovieDetails.this.getContentResolver().delete(
+                        PopularMoviesContract.MovieEntry.CONTENT_URI,
+                        PopularMoviesContract.MovieEntry.COLUMN_MOVIE_ID + " = ?",
+                        mSelectionArgs);
+
+                isFaved = false;
+                showFavoritesButton();
+            }
+        });
+
+
         // Layout reference
         mDetailLayout = (ConstraintLayout) findViewById(R.id.ll_detail_layout);
-
-        // Get the intent that started this Detailed View
-        Intent intentThatStartedThatActivity = getIntent();
-
-        // Get the ID that was passed though the intent
-        id = intentThatStartedThatActivity.getStringExtra(Intent.EXTRA_TEXT);
 
         /* This TextView is used to display errors and will be hidden if there are no errors */
         mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display_detail);
@@ -130,6 +211,20 @@ public class MovieDetails extends AppCompatActivity {
         mErrorMessageDisplay.setVisibility(View.INVISIBLE);
         /* Then, make sure the weather data is visible */
         mDetailLayout.setVisibility(View.VISIBLE);
+    }
+
+    private void showFavedButton() {
+        // Hide the default Favorites button
+        mFavoritesButton.setVisibility(View.INVISIBLE);
+        // Then, show the Faved button
+        mFavedButton.setVisibility(View.VISIBLE);
+    }
+
+    private void showFavoritesButton() {
+        // Hide the default Favorites button
+        mFavedButton.setVisibility(View.INVISIBLE);
+        // Then, show the Faved button
+        mFavoritesButton.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -245,6 +340,9 @@ public class MovieDetails extends AppCompatActivity {
                 movie.originalTitle = JsonMovieData.originalTitle;
                 movie.releaseDate = JsonMovieData.releaseDate;
                 movie.voteAverage = JsonMovieData.voteAverage;
+
+                // Store the movie data in a global variable so that we can use it for the Favorites list
+                mMovie = movie;
 
                 // Return the movie variable for it to be used in onPostExecute
                 return movie;

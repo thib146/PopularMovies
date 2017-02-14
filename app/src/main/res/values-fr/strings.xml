@@ -14,6 +14,9 @@
     <string name="error_message_api_key">
         La clé API est vide. Veuillez saisir votre clé API dans le fichier "NetworkUtils.java" et recompiler le code.
     </string>
+    <string name="no_favorites_message">
+        Vous n\'avez pas encore de films favoris. Naviguez dans les films et cliquez sur le bouton Coeur pour l\'enregistrer dans votre liste de Favoris.
+    </string>
 
     <string name="movie_original_title">Titre Original: %1$s</string>
     <string name="movie_release_date">Date de Sortie: %1$s</string>
@@ -21,6 +24,7 @@
 
     <string name="popular_button">Populaires</string>
     <string name="ratings_button">Mieux Notés</string>
+    <string name="favorites_button">Favoris</string>
 
     <string name="january">janvier</string>
     <string name="february">février</string>

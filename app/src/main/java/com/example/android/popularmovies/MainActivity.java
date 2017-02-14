@@ -1,11 +1,17 @@
 package com.example.android.popularmovies;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -18,6 +24,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.android.popularmovies.MovieAdapter.MovieAdapterOnClickHandler;
+import com.example.android.popularmovies.data.PopularMoviesContract;
+import com.example.android.popularmovies.utilities.FakeDataUtils;
 import com.example.android.popularmovies.utilities.MovieArrays;
 import com.example.android.popularmovies.utilities.NetworkUtils;
 import com.example.android.popularmovies.utilities.TheMovieDBJsonUtils;
@@ -28,14 +36,43 @@ import java.util.ArrayList;
 
 import static com.example.android.popularmovies.utilities.NetworkUtils.isNetworkAvailable;
 
-public class MainActivity extends AppCompatActivity
-        implements MovieAdapterOnClickHandler {
+public class MainActivity extends AppCompatActivity implements
+        MovieAdapterOnClickHandler,
+        LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+
+    /*
+     * The columns of data that we are interested in displaying within our MainActivity's list of
+     * weather data.
+     */
+    public static final String[] MAIN_FAVORITES_PROJECTION = {
+            PopularMoviesContract.MovieEntry.COLUMN_MOVIE_ID,
+            PopularMoviesContract.MovieEntry.COLUMN_POSTER_PATH,
+            PopularMoviesContract.MovieEntry.COLUMN_TITLE
+    };
+
+    /*
+     * We store the indices of the values in the array of Strings above to more quickly be able to
+     * access the data from our query. If the order of the Strings above changes, these indices
+     * must be adjusted to match the order of the Strings.
+     */
+    public static final int INDEX_MOVIE_ID = 0;
+    public static final int INDEX_POSTER_PATH = 1;
+    public static final int INDEX_TITLE = 2;
+
+    private static final int ID_FAVORITES_LOADER = 146;
 
     // RecyclerView + Adapter declarations
     private RecyclerView mRecyclerView;
     private MovieAdapter mMovieAdapter;
+    private int mPosition = RecyclerView.NO_POSITION;
+
+    // Cursor to get the data from the Popular Movie Content Provider
+    private Cursor mCursorMovieData;
+
+    // The index of the ID, Poster and Title columns in the cursor
+    private int mIdCol, mPosterCol, mTitleCol;
 
     // Error Message TextView
     private TextView mErrorMessageDisplay;
@@ -44,10 +81,10 @@ public class MainActivity extends AppCompatActivity
     private ProgressBar mLoadingIndicator;
 
     // String storing the sort query, set by default to "popular"
-    private String sortQuery = "popular";
+    public static String sortQuery = "popular";
 
     // Array containing all the movie IDs, used to know which item we clicked on
-    private ArrayList<String> mMovieId;
+    public ArrayList<String> mMovieId;
 
     // MovieArray containing all the movies currently loaded
     private MovieArrays[] mMovie;
@@ -79,8 +116,8 @@ public class MainActivity extends AppCompatActivity
          */
         SegmentedButton buttons = (SegmentedButton)findViewById(R.id.segmented);
         buttons.clearButtons();
-        buttons.addButtons(getString(R.string.popular_button), getString(R.string.ratings_button));
-        // First button is selected
+        buttons.addButtons(getString(R.string.popular_button), getString(R.string.ratings_button), getString(R.string.favorites_button));
+        // Select the first button by default
         buttons.setPushedButtonIndex(0);
         // Some example click handlers. Note the click won't get executed
         // if the segmented button is already selected (dark blue)
@@ -92,11 +129,15 @@ public class MainActivity extends AppCompatActivity
                     mMovieAdapter.setMovieData(null);   // Clean the movie data
                     mCurrentPageNumber = "1";           // Reset the current page number
                     loadMovieData();                    // Reload the movie data
-                } else {
+                } else if (index == 1){
                     sortQuery = "top_rated";
                     mMovieAdapter.setMovieData(null);
                     mCurrentPageNumber = "1";
                     loadMovieData();
+                } else if (index == 2) {
+                    sortQuery = "favorites";
+                    mMovieAdapter.setMovieData(null);
+                    getSupportLoaderManager().restartLoader(ID_FAVORITES_LOADER, null, MainActivity.this);
                 }
             }
         });
@@ -109,6 +150,9 @@ public class MainActivity extends AppCompatActivity
         reload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (sortQuery.equals("favorites")) {
+                    return;
+                }
                 mMovieAdapter.setMovieData(null);   // Clean the movie data
                 mCurrentPageNumber = "1";           // Reset the current page number
                 loadMovieData();                    // Reload the movie data
@@ -153,7 +197,7 @@ public class MainActivity extends AppCompatActivity
                 int totalItemCount = layoutManager.getItemCount();
                 int pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
 
-                if (pastVisibleItems + visibleItemCount == totalItemCount && !mBottomReachedOnce) { // If we reach the bottom
+                if (!sortQuery.equals("favorites") && pastVisibleItems + visibleItemCount == totalItemCount && !mBottomReachedOnce) { // If we reach the bottom
                     Log.e(TAG, "Bottom reached!");  // Log the event
                     loadMoreMovieData();            // Load more data (20 more movies)
                     mBottomReachedOnce = true;      // Block the access for 1 second, to prevent the load to happen 10 times
@@ -178,6 +222,84 @@ public class MainActivity extends AppCompatActivity
 
         /* Once all of our views are setup, we can load the movie data. */
         loadMovieData();
+
+        // Initialize the cursor loader for the Favorites list
+        getSupportLoaderManager().initLoader(ID_FAVORITES_LOADER, null, this);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int loaderId, Bundle bundle) {
+
+
+        switch (loaderId) {
+
+            case ID_FAVORITES_LOADER:
+                /* URI for all rows of movie data in our favorite movies table */
+                Uri favoritesQueryUri = PopularMoviesContract.MovieEntry.CONTENT_URI;
+                /* Sort order: Ascending by title */
+                String sortOrder = PopularMoviesContract.MovieEntry.COLUMN_TITLE + " ASC";
+                /*
+                 * A SELECTION in SQL declares which rows you'd like to return. In our case, we
+                 * want all weather data from today onwards that is stored in our weather table.
+                 * We created a handy method to do that in our WeatherEntry class.
+                 */
+                String selection = PopularMoviesContract.MovieEntry.COLUMN_MOVIE_ID;
+
+                return new CursorLoader(this,
+                        favoritesQueryUri,
+                        MAIN_FAVORITES_PROJECTION,
+                        selection,
+                        null,
+                        sortOrder);
+
+            default:
+                throw new RuntimeException("Loader Not Implemented: " + loaderId);
+        }
+    }
+
+    /**
+     * Called when a Loader has finished loading its data.
+     *
+     * NOTE: There is one small bug in this code. If no data is present in the cursor do to an
+     * initial load being performed with no access to internet, the loading indicator will show
+     * indefinitely, until data is present from the ContentProvider. This will be fixed in a
+     * future version of the course.
+     *
+     * @param loader The Loader that has finished.
+     * @param data   The data generated by the Loader.
+     */
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        mMovieAdapter.swapCursor(data);
+        mCursorMovieData = data;
+        if (mPosition == RecyclerView.NO_POSITION) mPosition = 0;
+        //mRecyclerView.smoothScrollToPosition(mPosition);
+        if (data != null) {
+            if (data.getCount() != 0) {
+                showMovieDataView();
+            } else if (data.getCount() == 0 && sortQuery.equals("favorites")) {
+                showNoFavoritesMessage();
+            }
+        }
+    }
+
+    /**
+     * Called when a previously created loader is being reset, and thus making its data unavailable.
+     * The application should at this point remove any references it has to the Loader's data.
+     *
+     * @param loader The Loader that is being reset.
+     */
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        /*
+         * Since this Loader's data is now invalid, we need to clear the Adapter that is
+         * displaying the data.
+         */
+        mMovieAdapter.swapCursor(null);
+    }
+
+    public static String getSortQuery() {
+        return sortQuery;
     }
 
     private static class CustomGridLayoutManager extends GridLayoutManager {
@@ -247,7 +369,14 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onClick(String movieID) {
         int adapterPosition = mMovieAdapter.adapterPosition;
-        String movieId = mMovieId.get(adapterPosition);
+        String movieId;
+
+        if (sortQuery.equals("favorites")) {
+            mCursorMovieData.moveToPosition(adapterPosition);
+            movieId = String.valueOf(mCursorMovieData.getString(INDEX_MOVIE_ID));
+        } else {
+            movieId = mMovieId.get(adapterPosition);
+        }
 
         // Open the Detail Movie activity
         Intent intentToStartMovieDetailActivity = new Intent(this, MovieDetails.class);
@@ -261,6 +390,13 @@ public class MainActivity extends AppCompatActivity
         } else {
             showErrorMessage();
         }
+    }
+
+    // Close the data cursor when the app gets destroyed
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mCursorMovieData.close();
     }
 
     /**
@@ -290,6 +426,17 @@ public class MainActivity extends AppCompatActivity
             mErrorMessageDisplay.setText(R.string.error_message_common);
         }
         /* Show the error view */
+        mErrorMessageDisplay.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * This method will make the "No Favorites" message visible and hide the movie
+     * View.
+     */
+    private void showNoFavoritesMessage() {
+        /* Hide the current data */
+        mRecyclerView.setVisibility(View.INVISIBLE);
+        mErrorMessageDisplay.setText(R.string.no_favorites_message);
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
     }
 
@@ -478,6 +625,7 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         protected void onPostExecute(MovieArrays[] movieData) {
+            mLoadingIndicator.setVisibility(View.INVISIBLE);
             if (movieData != null) {
                 int currentPageNumberInt = Integer.valueOf(mCurrentPageNumber);
 
