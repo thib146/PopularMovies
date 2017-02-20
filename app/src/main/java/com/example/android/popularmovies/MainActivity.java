@@ -1,9 +1,11 @@
 package com.example.android.popularmovies;
 
+import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -103,13 +105,19 @@ public class MainActivity extends AppCompatActivity implements
     // Boolean to store the internet connection status
     private static boolean mConnected = true;
 
-    // Boolean to know add more data when we reach the bottom ONLY ONCE
+    // Boolean to add more data when we reach the bottom ONLY ONCE
     private boolean mBottomReachedOnce = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        boolean isTablet = getResources().getBoolean(R.bool.isTablet);
+
+        if (isTablet) {
+            numColumns = 3;
+        }
 
         /**
          * Creation of the Segmented Buttons using Widget/SegmentedButton

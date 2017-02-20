@@ -3,4 +3,5 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="mainActionBarHeight">106dp</dimen>
+    <dimen name="review_width">280dp</dimen>
 </resources>

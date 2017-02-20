@@ -3,6 +3,15 @@
 
     <item
         is-multidex="true"
+        jar="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\25.1.1\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="ecb496cc08dd52551fc5ec6db3bc0632e95a89bb">
+        <dex dex="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-appcompat-v7-25.1.1_570def4f65f4196a7e1bfdceda1c10ddd3ae2a2c\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
         jar="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\exploded-aar\com.android.support\support-v4\25.1.1\jars\classes.jar"
         jumboMode="true"
         optimize="true"
@@ -18,6 +27,15 @@
         revision="25.0.2"
         sha1="662d7533b25a666c649c10a16b42edfb95f25a4f">
         <dex dex="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support.constraint-constraint-layout-1.0.0-beta4_a6739d4075ef109e9238cc1d57a100f36b376e68\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\exploded-aar\com.android.support\design\25.1.1\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="cd7951e04cfb9a8bf008d544a478d9a8d8192d38">
+        <dex dex="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-design-25.1.1_181c1c5d5e73c76b042733f271ae2b6b4fc46ba0\classes.dex" />
     </item>
     <item
         is-multidex="true"
@@ -48,12 +66,30 @@
     </item>
     <item
         is-multidex="true"
+        jar="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\exploded-aar\com.android.support\support-core-utils\25.1.1\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="0fb891e8f0cfba0513043a7bb357513d229ca2cd">
+        <dex dex="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-core-utils-25.1.1_2f7a696940ad1fd5593480a128491ab8f047fecb\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
         jar="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\exploded-aar\com.android.support\transition\25.1.1\jars\classes.jar"
         jumboMode="true"
         optimize="true"
         revision="25.0.2"
         sha1="15b049fedbd8e3926bf99d9e45dfc9b2a1043bb9">
         <dex dex="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-transition-25.1.1_4b8e1dde1aa0ddf09250b6e0734951f4afd313c7\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\thiba\AppData\Local\Android\sdk\extras\m2repository\com\android\support\constraint\constraint-layout-solver\1.0.0-beta4\constraint-layout-solver-1.0.0-beta4.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="0a9cb567dc008f570c28531720168f19148da965">
+        <dex dex="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\constraint-layout-solver-1.0.0-beta4_efab53b1501e968116e33d605383cde1c502c065\classes.dex" />
     </item>
     <item
         is-multidex="true"
@@ -75,75 +111,21 @@
     </item>
     <item
         is-multidex="true"
-        jar="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="25.0.2"
-        sha1="f732b9f31497cdabe0458773ab757451746d0703">
-        <dex dex="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run-bootstrap_44505a325662db7c6d1ff6902e812a13c91477c8\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="C:\Users\thiba\.gradle\caches\modules-2\files-2.1\com.squareup.picasso\picasso\2.5.2\7446d06ec8d4f7ffcc53f1da37c95f200dcb9387\picasso-2.5.2.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="25.0.2"
-        sha1="7446d06ec8d4f7ffcc53f1da37c95f200dcb9387">
-        <dex dex="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\picasso-2.5.2_bd6a94b6daed5681e09f27c08861e691a482357c\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\exploded-aar\com.android.support\recyclerview-v7\25.1.1\jars\classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="25.0.2"
-        sha1="c9649557905bf7a80fca9e0d54cbcb7662627860">
-        <dex dex="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-recyclerview-v7-25.1.1_777ac242a770cacb4dee05623cce1dbf3478819b\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\25.1.1\jars\classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="25.0.2"
-        sha1="ecb496cc08dd52551fc5ec6db3bc0632e95a89bb">
-        <dex dex="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-appcompat-v7-25.1.1_570def4f65f4196a7e1bfdceda1c10ddd3ae2a2c\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\exploded-aar\com.android.support\design\25.1.1\jars\classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="25.0.2"
-        sha1="cd7951e04cfb9a8bf008d544a478d9a8d8192d38">
-        <dex dex="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-design-25.1.1_181c1c5d5e73c76b042733f271ae2b6b4fc46ba0\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\exploded-aar\com.android.support\support-core-utils\25.1.1\jars\classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="25.0.2"
-        sha1="0fb891e8f0cfba0513043a7bb357513d229ca2cd">
-        <dex dex="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-core-utils-25.1.1_2f7a696940ad1fd5593480a128491ab8f047fecb\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="C:\Users\thiba\AppData\Local\Android\sdk\extras\m2repository\com\android\support\constraint\constraint-layout-solver\1.0.0-beta4\constraint-layout-solver-1.0.0-beta4.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="25.0.2"
-        sha1="0a9cb567dc008f570c28531720168f19148da965">
-        <dex dex="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\constraint-layout-solver-1.0.0-beta4_efab53b1501e968116e33d605383cde1c502c065\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
         jar="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\incremental-runtime-classes\debug\instant-run.jar"
         jumboMode="true"
         optimize="true"
         revision="25.0.2"
-        sha1="5fc3cce46643dcb1ca97fafd6af00c71bb229467">
+        sha1="51dbffd329d0906f54efffb250dd561205c82955">
         <dex dex="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run_8bddef3d10e18a63224594eafd585df80f890319\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="3be3254182df941187936d7de163613d8bfe3cdf">
+        <dex dex="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run-bootstrap_44505a325662db7c6d1ff6902e812a13c91477c8\classes.dex" />
     </item>
     <item
         is-multidex="true"
@@ -156,12 +138,30 @@
     </item>
     <item
         is-multidex="true"
+        jar="C:\Users\thiba\.gradle\caches\modules-2\files-2.1\com.squareup.picasso\picasso\2.5.2\7446d06ec8d4f7ffcc53f1da37c95f200dcb9387\picasso-2.5.2.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="7446d06ec8d4f7ffcc53f1da37c95f200dcb9387">
+        <dex dex="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\picasso-2.5.2_bd6a94b6daed5681e09f27c08861e691a482357c\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
         jar="C:\Users\thiba\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\25.1.1\support-annotations-25.1.1.jar"
         jumboMode="true"
         optimize="true"
         revision="25.0.2"
         sha1="b59b6ee8d6ecc03e672d253800430343493a6ed8">
         <dex dex="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\support-annotations-25.1.1_671839f78ed46169fd8237e00cfb7068470f6f91\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\exploded-aar\com.android.support\recyclerview-v7\25.1.1\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="c9649557905bf7a80fca9e0d54cbcb7662627860">
+        <dex dex="C:\Users\thiba\Desktop\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-recyclerview-v7-25.1.1_777ac242a770cacb4dee05623cce1dbf3478819b\classes.dex" />
     </item>
 
 </items>

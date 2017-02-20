@@ -2,10 +2,16 @@ package com.example.android.popularmovies.utilities;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
+import android.widget.TextView;
+
+import com.example.android.popularmovies.MainActivity;
+import com.example.android.popularmovies.MovieDetails;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -18,6 +24,7 @@ import java.util.ArrayList;
 
 public class TheMovieDBJsonUtils {
 
+    private static final String TAG = "TheMovieJson";
     /**
      * This method parses JSON from a web response and returns an array of Strings
      * describing the movies with their respective information
@@ -40,6 +47,7 @@ public class TheMovieDBJsonUtils {
         /* Movies information. Each movie info is an element of the "results" array */
         final String TMDB_LIST = "results";
         final String TMDB_POSTER_PATH = "poster_path";
+        final String TMDB_BACKDROP_PATH = "backdrop_path";
         final String TMDB_OVERVIEW = "overview";
         final String TMDB_RELEASE_DATE = "release_date";
         final String TMDB_ID = "id";
@@ -49,8 +57,14 @@ public class TheMovieDBJsonUtils {
         final String TMDB_VOTE_COUNT = "vote_count";
         final String TMDB_VOTE_AVERAGE = "vote_average";
 
+        final String TMDB_VIDEOS = "videos";
+        final String TMDB_IMAGES = "images";
+        final String TMDB_REVIEWS = "reviews";
+
         final String TMDB_BASE_URL_POSTER = "http://image.tmdb.org/t/p/";
         final String TMDB_STATUS_CODE = "status_code";
+
+        String backdropSize = "w500";
 
         // Global Json object
         JSONObject movieJson = new JSONObject(movieJsonStr);
@@ -73,6 +87,7 @@ public class TheMovieDBJsonUtils {
 
         // Variable to store all the poster paths URLs
         URL[] urlPosterPath;
+        URL[] urlBackdropPath;
 
         // Json array
         JSONArray movieArray;
@@ -158,6 +173,7 @@ public class TheMovieDBJsonUtils {
             //Copy the read values to the corresponding variables
             String movieTitle = movieJson.getString(TMDB_TITLE);
             String posterPath = movieJson.getString(TMDB_POSTER_PATH);
+            String backdropPath = movieJson.getString(TMDB_BACKDROP_PATH);
             String description = movieJson.getString(TMDB_OVERVIEW);
             String releaseDate = movieJson.getString(TMDB_RELEASE_DATE);
             String id = movieJson.getString(TMDB_ID);
@@ -167,30 +183,40 @@ public class TheMovieDBJsonUtils {
             String voteAverage = movieJson.getString(TMDB_VOTE_AVERAGE);
 
             /**
-             * Remove the first letter from the moviePoser string : the character "/" which is not useful
+             * Remove the first letter from the movie poster and the backdrop string : the character "/" which is not useful
              */
             posterPath = posterPath.substring(1);
+            backdropPath = backdropPath.substring(1);
 
             urlPosterPath = new URL[movieJson.length()];
+            urlBackdropPath = new URL[movieJson.length()];
 
-            // Build the URI for the Poster Path
-            Uri builtUri = Uri.parse(TMDB_BASE_URL_POSTER).buildUpon()
+            // Build the URI for the Poster & Backdrop Paths
+            Uri builtUriPoster = Uri.parse(TMDB_BASE_URL_POSTER).buildUpon()
                     .appendPath(posterVersion)
                     .appendPath(posterPath)
                     .build();
 
-            // Build the Poster Path URL
+            Uri builtUriBackdrop = Uri.parse(TMDB_BASE_URL_POSTER).buildUpon()
+                    .appendPath(backdropSize)
+                    .appendPath(backdropPath)
+                    .build();
+
+            // Build the Poster & Backdrop Paths URLs
             try {
-                urlPosterPath[0] = new URL(builtUri.toString());
+                urlPosterPath[0] = new URL(builtUriPoster.toString());
+                urlBackdropPath[0] = new URL(builtUriBackdrop.toString());
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
 
-            // Copy the built URL to the posterPath variable
+            // Copy the built URLs to the posterPath & backdropPath variable
             posterPath = urlPosterPath[0].toString();
+            backdropPath = urlBackdropPath[0].toString();
 
             // Instantiate all the variables that we need
             parsedMovieData.posterPath = new ArrayList<String>();
+            parsedMovieData.backdropPath = new ArrayList<String>();
             parsedMovieData.description = new ArrayList<String>();
             parsedMovieData.title = new ArrayList<String>();
             parsedMovieData.releaseDate = new ArrayList<String>();
@@ -206,6 +232,7 @@ public class TheMovieDBJsonUtils {
             parsedMovieData.originalTitle.add(0, originalTitle);
             parsedMovieData.popularity.add(0, popularity);
             parsedMovieData.posterPath.add(0, posterPath);
+            parsedMovieData.backdropPath.add(0, backdropPath);
             parsedMovieData.releaseDate.add(0, releaseDate);
             parsedMovieData.title.add(0, movieTitle);
             parsedMovieData.voteAverage.add(0, voteAverage);
@@ -214,5 +241,177 @@ public class TheMovieDBJsonUtils {
         }
         // Return the read data
         return parsedMovieData;
+    }
+
+    /**
+     * This method parses JSON from a web response and returns an array of Strings
+     * containing the videos of the selected movie
+     *
+     * @param movieJsonStr JSON response from server
+     *
+     * @return Array of Strings containing the videos
+     *
+     * @throws JSONException If JSON data cannot be properly parsed
+     */
+    public static VideoArrays getVideosFromJson(Context context, String movieJsonStr)
+            throws JSONException {
+
+        /* Movies information. Each movie info is an element of the "results" array */
+        final String TMDB_LIST = "results";
+        final String TMDB_MOVIE_ID = "id";
+
+        final String YOUTUBE_IMAGE_BASE_URL = "http://img.youtube.com/vi/";
+        final String YOUTUBE_FIRST_IMAGE_FILE = "0.jpg";
+
+        final String TMDB_VIDEO_ID = "id";
+        final String TMDB_ISO_639_1 = "iso_639_1";
+        final String TMDB_ISO_3166_1 = "iso_3166_1";
+        final String TMDB_KEY = "key";
+        final String TMDB_NAME = "name";
+        final String TMDB_SITE = "site";
+        final String TMDB_SIZE = "size";
+        final String TMDB_TYPE = "type";
+
+        // Variable to store all the video paths URLs
+        URL[] urlVideoPath;
+
+        // Global Json object
+        JSONObject movieJson = new JSONObject(movieJsonStr);
+
+        // Json array
+        JSONArray videoArray;
+
+        VideoArrays parsedMovieData = new VideoArrays();
+
+        String totalPagesString;
+
+        videoArray = movieJson.getJSONArray(TMDB_LIST);
+
+        urlVideoPath = new URL[videoArray.length()];
+
+        // Instantiate all the variables that we need
+        ArrayList<String> videoId = new ArrayList<String>();
+        ArrayList<String> iso6391 = new ArrayList<String>();
+        ArrayList<String> iso31661 = new ArrayList<String>();
+        ArrayList<String> key = new ArrayList<String>();
+        ArrayList<String> name = new ArrayList<String>();
+        ArrayList<String> site = new ArrayList<String>();
+        ArrayList<String> size = new ArrayList<String>();
+        ArrayList<String> type = new ArrayList<String>();
+        ArrayList<String> videoPath = new ArrayList<String>();
+
+        for (int i = 0; i < videoArray.length(); i++) {
+
+                /* Get the JSON object representing one movie */
+            JSONObject oneVideo = videoArray.getJSONObject(i);
+
+            // Copy the read values to the corresponding variables
+            videoId.add(oneVideo.getString(TMDB_VIDEO_ID));
+            iso6391.add(oneVideo.getString(TMDB_ISO_639_1));
+            iso31661.add(oneVideo.getString(TMDB_ISO_3166_1));
+            key.add(oneVideo.getString(TMDB_KEY));
+            name.add(oneVideo.getString(TMDB_NAME));
+            site.add(oneVideo.getString(TMDB_SITE));
+            size.add(oneVideo.getString(TMDB_SIZE));
+            type.add(oneVideo.getString(TMDB_TYPE));
+
+            // Build the URI for the Poster Path
+            Uri builtUri = Uri.parse(YOUTUBE_IMAGE_BASE_URL).buildUpon()
+                    .appendPath(oneVideo.getString(TMDB_KEY))
+                    .appendPath(YOUTUBE_FIRST_IMAGE_FILE)
+                    .build();
+
+            // Create the Poster Path URL
+            try {
+                urlVideoPath[i] = new URL(builtUri.toString());
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+
+            // Copy the corrected value to the posterPath variable
+            videoPath.add(urlVideoPath[i].toString());
+            Log.e(TAG, "Url made :" + urlVideoPath[i].toString());
+        }
+
+        // Copy the full data in the parsedMovieData variable
+        parsedMovieData.videoId = videoId;
+        parsedMovieData.iso6391 = iso6391;
+        parsedMovieData.iso31661 = iso31661;
+        parsedMovieData.key = key;
+        parsedMovieData.name = name;
+        parsedMovieData.site = site;
+        parsedMovieData.size = size;
+        parsedMovieData.type = type;
+        parsedMovieData.imagePath = videoPath;
+
+        // Return the read data
+        return parsedMovieData;
+    }
+
+    /**
+     * This method parses JSON from a web response and returns an array of Strings
+     * containing the videos of the selected movie
+     *
+     * @param reviewJsonStr JSON response from server
+     *
+     * @return Array of Strings containing the videos
+     *
+     * @throws JSONException If JSON data cannot be properly parsed
+     */
+    public static ReviewArrays getReviewsFromJson(Context context, String reviewJsonStr)
+            throws JSONException {
+
+        /* Movies information. Each movie info is an element of the "results" array */
+        final String TMDB_LIST = "results";
+        final String TMDB_MOVIE_ID = "id";
+
+        final String TMDB_REVIEW_ID = "id";
+        final String TMDB_AUTHOR_NAME = "author";
+        final String TMDB_CONTENT = "content";
+        final String TMDB_REVIEW_URL = "url";
+
+        // Global Json object
+        JSONObject reviewJson = new JSONObject(reviewJsonStr);
+
+        // Json array
+        JSONArray reviewArray;
+
+        ReviewArrays parsedReviewData = new ReviewArrays();
+
+        reviewArray = reviewJson.getJSONArray(TMDB_LIST);
+
+        // Instantiate all the variables that we need
+        ArrayList<String> author = new ArrayList<String>();
+        ArrayList<String> id = new ArrayList<String>();
+        ArrayList<String> content = new ArrayList<String>();
+        ArrayList<String> url = new ArrayList<String>();
+        ArrayList<Boolean> isReviewTooLong = new ArrayList<Boolean>();
+
+        for (int i = 0; i < reviewArray.length(); i++) {
+
+                /* Get the JSON object representing one movie */
+            JSONObject oneReview = reviewArray.getJSONObject(i);
+
+            // Copy the read values to the corresponding variables
+            author.add(oneReview.getString(TMDB_AUTHOR_NAME));
+            id.add(oneReview.getString(TMDB_REVIEW_ID));
+            content.add(oneReview.getString(TMDB_CONTENT));
+            url.add(oneReview.getString(TMDB_REVIEW_URL));
+
+            if (oneReview.getString(TMDB_CONTENT).length() >= 100) {
+                isReviewTooLong.add(true);
+            } else {
+                isReviewTooLong.add(false);
+            }
+        }
+
+        // Copy the full data in the parsedMovieData variable
+        parsedReviewData.author = author;
+        parsedReviewData.id = id;
+        parsedReviewData.content = content;
+        parsedReviewData.url = url;
+
+        // Return the read data
+        return parsedReviewData;
     }
 }

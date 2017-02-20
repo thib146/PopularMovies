@@ -26,7 +26,7 @@ public class FakeDataUtils {
         ContentValues testFavoritesValues = new ContentValues();
         testFavoritesValues.put(PopularMoviesContract.MovieEntry.COLUMN_MOVIE_ID, id);
         testFavoritesValues.put(PopularMoviesContract.MovieEntry.COLUMN_TITLE, "Interstellar");
-        testFavoritesValues.put(PopularMoviesContract.MovieEntry.COLUMN_POSTER_PATH, "http://image.tmdb.org/t/p/w185/nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg");
+        testFavoritesValues.put(PopularMoviesContract.MovieEntry.COLUMN_POSTER_PATH, "http://image.tmdb.org/t/p/w500/nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg");
         return testFavoritesValues;
     }
 

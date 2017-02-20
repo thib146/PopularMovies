@@ -2,7 +2,7 @@
 
 <resources>
     <string name="app_name">Films Populaires</string>
-    <string name="movie_details">Informations du Film</string>
+    <string name="movie_details">Détails du Film</string>
     <string name="settings">Options</string>
     <string name="about">A propos</string>
     <string name="error_message_common">
@@ -21,6 +21,16 @@
     <string name="movie_original_title">Titre Original: %1$s</string>
     <string name="movie_release_date">Date de Sortie: %1$s</string>
     <string name="movie_ratings">Notes des Utilisateurs: %1$s/10</string>
+    <string name="movie_videos">Vidéos :</string>
+    <string name="movie_reviews">Commentaires :</string>
+    <string name="movie_reviews_read_more">Lire la suite</string>
+    <string name="movie_reviews_read_less">Cacher le texte</string>
+
+    <string name="movie_video_no_content_message">Il n\'y a aucune vidéo disponible</string>
+    <string name="movie_review_no_content_message">Il n\'y a encore aucun commentaire</string>
+
+    <string name="toast_add_favorite">Film ajouté aux favoris</string>
+    <string name="toast_remove_favorite">Film supprimé des favoris</string>
 
     <string name="popular_button">Populaires</string>
     <string name="ratings_button">Mieux Notés</string>

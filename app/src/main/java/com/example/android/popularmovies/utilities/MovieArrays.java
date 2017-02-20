@@ -12,6 +12,7 @@ import java.util.ArrayList;
 public class MovieArrays {
 
     public ArrayList<String> posterPath;
+    public ArrayList<String> backdropPath;
     public ArrayList<String> description;
     public ArrayList<String> releaseDate;
     public ArrayList<String> id;

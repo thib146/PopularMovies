@@ -29,6 +29,10 @@ public final class NetworkUtils {
 
     private static final String TMDB_PAGE_NUMBER = "page";
 
+    private static final String TMDB_VIDEOS = "videos";
+
+    private static final String TMDB_REVIEWS = "reviews";
+
     // Get the device language here
     private static String deviceLanguage = Locale.getDefault().getLanguage();
 
@@ -80,6 +84,58 @@ public final class NetworkUtils {
     public static URL buildUrlDetail(String id) {
         Uri builtUri = Uri.parse(THEMOVIEDB_BASE_URL).buildUpon()
                 .appendPath(id)
+                .appendQueryParameter(API_KEY_PARAM, API_KEY)
+                .appendQueryParameter(TMDB_LANGUAGE, deviceLanguage)
+                .build();
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        Log.v(TAG, "Built URI " + url);
+
+        return url;
+    }
+
+    /**
+     * Builds the URL used to talk to the movieDB server in the detailed activity, to get the videos once we have a movie ID
+     *
+     * @param id The id of a movie, once it's clicked
+     * @return The URL to use to query the movieDB server.
+     */
+    public static URL buildUrlVideos(String id) {
+        Uri builtUri = Uri.parse(THEMOVIEDB_BASE_URL).buildUpon()
+                .appendPath(id)
+                .appendPath(TMDB_VIDEOS)
+                .appendQueryParameter(API_KEY_PARAM, API_KEY)
+                .appendQueryParameter(TMDB_LANGUAGE, deviceLanguage)
+                .build();
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        Log.v(TAG, "Built URI " + url);
+
+        return url;
+    }
+
+    /**
+     * Builds the URL used to talk to the movieDB server in the detailed activity, to get the reviews once we have a movie ID
+     *
+     * @param id The id of a movie, once it's clicked
+     * @return The URL to use to query the movieDB server.
+     */
+    public static URL buildUrlReviews(String id) {
+        Uri builtUri = Uri.parse(THEMOVIEDB_BASE_URL).buildUpon()
+                .appendPath(id)
+                .appendPath(TMDB_REVIEWS)
                 .appendQueryParameter(API_KEY_PARAM, API_KEY)
                 .appendQueryParameter(TMDB_LANGUAGE, deviceLanguage)
                 .build();

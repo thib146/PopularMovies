@@ -1,0 +1,4 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="review_width">470dp</dimen>
+</resources>

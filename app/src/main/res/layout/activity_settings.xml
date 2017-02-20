@@ -10,7 +10,7 @@
     <ImageView
         android:id="@+id/settings_toolbar"
         android:layout_width="0dp"
-        android:layout_height="62dp"
+        android:layout_height="56dp"
         android:background="@color/colorPrimary"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"

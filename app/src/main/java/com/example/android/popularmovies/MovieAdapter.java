@@ -2,7 +2,11 @@ package com.example.android.popularmovies;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +16,7 @@ import android.widget.TextView;
 import com.example.android.popularmovies.data.PopularMoviesContract;
 import com.example.android.popularmovies.utilities.MovieArrays;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.util.ArrayList;
 
@@ -58,12 +63,22 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
      */
     public class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public final ImageView mMovieImageView;
+        //public final ImageView mMovieBackdropImageView;
         public final TextView mMovieTitleTextView;
+        public final TextView mMovieOriginalTitle;
+        public final TextView mReleaseDate;
+        public final TextView mMovieDescription;
+        public final TextView mMovieRatings;
 
         public MovieAdapterViewHolder(View view) {
             super(view);
             mMovieImageView = (ImageView) view.findViewById(R.id.iv_movie_data);
             mMovieTitleTextView = (TextView) view.findViewById(R.id.tv_movie_title_main);
+            //mMovieBackdropImageView = (ImageView) view.findViewById(R.id.movie_details_toolbar);
+            mMovieOriginalTitle = (TextView) view.findViewById(R.id.tv_movie_original_title_details);
+            mReleaseDate = (TextView) view.findViewById(R.id.tv_date_details);
+            mMovieDescription = (TextView) view.findViewById(R.id.tv_description_details);
+            mMovieRatings = (TextView) view.findViewById(R.id.tv_ratings_details);
             view.setOnClickListener(this);
         }
 
@@ -119,7 +134,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
      * @param position                  The position of the item within the adapter's data set.
      */
     @Override
-    public void onBindViewHolder(MovieAdapterViewHolder movieAdapterViewHolder, int position) {
+    public void onBindViewHolder(final MovieAdapterViewHolder movieAdapterViewHolder, int position) {
         String sortQuery = MainActivity.getSortQuery();
 
         if (sortQuery.equals("favorites")) {
@@ -127,25 +142,30 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
             String oneMoviePoster = mCursor.getString(MainActivity.INDEX_POSTER_PATH);
             String oneMovieTitle = mCursor.getString(MainActivity.INDEX_TITLE);
-            Context context = movieAdapterViewHolder.mMovieImageView.getContext();
+            final Context context = movieAdapterViewHolder.mMovieImageView.getContext();
 
             // Display the movie poster and the movie title in the RecyclerView
             Picasso.with(context).load(oneMoviePoster).into(movieAdapterViewHolder.mMovieImageView);
             movieAdapterViewHolder.mMovieTitleTextView.setText(oneMovieTitle);
         } else {
             String oneMoviePoster = mMoviesData.posterPath.get(position);
+            //String oneMovieBackdrop = mMoviesData.backdropPath.get(position);
             String oneMovieTitle = mMoviesData.title.get(position);
-            Context context = movieAdapterViewHolder.mMovieImageView.getContext();
+            //String onMovieOriginalTitle = mMoviesData.originalTitle.get(position);
+            //String onMovieReleaseDate = mMoviesData.releaseDate.get(position);
+            //String onMovieDescription = mMoviesData.description.get(position);
+            //String onMovieRatings = mMoviesData.voteAverage.get(position);
+
+            final Context context = movieAdapterViewHolder.mMovieImageView.getContext();
 
             // Display the movie poster and the movie title in the RecyclerView
             Picasso.with(context).load(oneMoviePoster).into(movieAdapterViewHolder.mMovieImageView);
-            int sdk = android.os.Build.VERSION.SDK_INT;
-            if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                movieAdapterViewHolder.mMovieImageView.setBackgroundDrawable(null);
-            } else {
-                //movieAdapterViewHolder.mMovieImageView.setBackground(null);
-            }
+
             movieAdapterViewHolder.mMovieTitleTextView.setText(oneMovieTitle);
+            //movieAdapterViewHolder.mMovieOriginalTitle.setText(onMovieOriginalTitle);
+            //movieAdapterViewHolder.mReleaseDate.setText(onMovieReleaseDate);
+            //movieAdapterViewHolder.mMovieDescription.setText(onMovieDescription);
+            //movieAdapterViewHolder.mMovieRatings.setText(onMovieRatings);
         }
     }
 
@@ -193,6 +213,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         // Instantiate of all the variable that we need
         mMoviesData = new MovieArrays();
         mMoviesData.posterPath = new ArrayList<String>();
+        //mMoviesData.backdropPath = new ArrayList<String>();
         mMoviesData.description = new ArrayList<String>();
         mMoviesData.title = new ArrayList<String>();
         mMoviesData.releaseDate = new ArrayList<String>();
@@ -211,6 +232,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         // Add the data passed (moviesData) to each member of mMovieData at the right position
         for (int i=0; i<20; i++) {
             mMoviesData.posterPath.add(i, moviesData.posterPath.get(i));
+            //mMoviesData.backdropPath.add(i, moviesData.backdropPath.get(i));
             mMoviesData.description.add(i, moviesData.description.get(i));
             mMoviesData.releaseDate.add(i, moviesData.releaseDate.get(i));
             mMoviesData.id.add(i, moviesData.id.get(i));
@@ -239,6 +261,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
         for (int i = 0; i < 20; i++) {
             mMoviesData.posterPath.add(i+lengthMoviesData, moviesData.posterPath.get(i));
+            //mMoviesData.backdropPath.add(i+lengthMoviesData, moviesData.backdropPath.get(i));
             mMoviesData.description.add(i+lengthMoviesData, moviesData.description.get(i));
             mMoviesData.releaseDate.add(i+lengthMoviesData, moviesData.releaseDate.get(i));
             mMoviesData.id.add(i+lengthMoviesData, moviesData.id.get(i));
