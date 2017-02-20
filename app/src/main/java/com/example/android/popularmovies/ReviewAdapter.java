@@ -19,8 +19,7 @@ import java.util.ArrayList;
 
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdapterViewHolder> {
 
-    // Global variable containing all the movies currently loaded
-    // -- Arrays are used to be able to easily add more movies as the user scrolls down
+    // Global variable containing all the reviews currently loaded
     private ReviewArrays mReviewsData;
 
     // Global int for the position of an item
@@ -40,7 +39,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdap
     }
 
     /**
-     * Creates a MovieAdapter.
+     * Creates a ReviewAdapter.
      *
      * @param clickHandler The on-click handler for this adapter. This single handler is called
      *                     when an item is clicked.
@@ -50,7 +49,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdap
     }
 
     /**
-     * Cache of the children views for a movie list item.
+     * Cache of the children views for a review list item.
      */
     public class ReviewAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {;
         public final TextView mAuthorInitialTextView;
@@ -83,15 +82,16 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdap
             String oneReviewText = mReviewsData.content.get(adapterPosition);
 
             // Handle the click on the Read More button
-            if (v.getId() == mReadMoreTextView.getId() && !isReadMoreClicked) {
-                mReviewTextView.setText(oneReviewText);
-                mReadMoreTextView.setText(mReviewsData.readLessText);
+            if (v.getId() == mReadMoreTextView.getId() && !isReadMoreClicked) { // If the "Read More" button is clicked
+                mReviewTextView.setText(oneReviewText); // Display the whole review
+                mReadMoreTextView.setText(mReviewsData.readLessText); // Change the text of the button to "Read Less"
 
                 isReadMoreClicked = true;
                 mClickHandler.onClick(reviewId);
-            } else if (v.getId() == mReadMoreTextView.getId() && isReadMoreClicked) {
-                mReviewTextView.setText(oneReviewText.substring(0,100) + "...");
-                mReadMoreTextView.setText(mReviewsData.readMoreText);
+            } else if (v.getId() == mReadMoreTextView.getId() && isReadMoreClicked) { // If the "Read Less" button is clicked
+                String readLessText = oneReviewText.substring(0,100) + "...";
+                mReviewTextView.setText(readLessText); // Display the 100 first characters + "..."
+                mReadMoreTextView.setText(mReviewsData.readMoreText); // Change the text of the button to "Read More"
 
                 isReadMoreClicked = false;
                 mClickHandler.onClick(reviewId);
@@ -131,15 +131,16 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdap
     @Override
     public void onBindViewHolder(ReviewAdapterViewHolder reviewAdapterViewHolder, int position) {
 
-        String oneAuthorName = mReviewsData.author.get(position);
-        String oneReviewText = mReviewsData.content.get(position);
+        String oneAuthorName = mReviewsData.author.get(position); // Author data
+        String oneReviewText = mReviewsData.content.get(position); // Content data
 
-        String oneAuthorInitial = oneAuthorName.substring(0, 1).toUpperCase();
+        String oneAuthorInitial = oneAuthorName.substring(0, 1).toUpperCase(); // Create the initial in the circle image
 
-        if (oneReviewText.length() >= 100) {
-            reviewAdapterViewHolder.mReviewTextView.setText(oneReviewText.substring(0,100) + "...");
+        if (oneReviewText.length() >= 100) { // If the Review is too long, cut it to the 1st 100 characters by default and display "Read More"
+            String reviewShortText = oneReviewText.substring(0,100) + "...";
+            reviewAdapterViewHolder.mReviewTextView.setText(reviewShortText);
             reviewAdapterViewHolder.mReadMoreTextView.setVisibility(View.VISIBLE);
-        } else {
+        } else { // If the review is short, display it entirely with no "Read More" button
             reviewAdapterViewHolder.mReviewTextView.setText(oneReviewText);
             reviewAdapterViewHolder.mReadMoreTextView.setVisibility(View.INVISIBLE);
         }
@@ -161,13 +162,18 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdap
     }
 
     /**
-     * This method is used to set the movie data on a MovieAdapter if we've already
-     * created one. This is handy when we get new data from the web but don't want to create a
-     * new MovieAdapter to display it.
+     * This method is used to set the review data on a ReviewAdapter if we've already
+     * created one.
      *
-     * @param reviews The new movie data to be displayed.
+     * @param reviews The new review data to be displayed.
      */
     public void setReviewData(ReviewArrays reviews) {
+
+        // Check if the data passed is null
+        if (reviews == null) {
+            mReviewsData = null;
+            return;
+        }
 
         // Instantiate of all the variable that we need
         mReviewsData = new ReviewArrays();
@@ -176,13 +182,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdap
         mReviewsData.content = new ArrayList<String>();
         mReviewsData.url = new ArrayList<String>();
 
-        // Check if the data passed is null
-        if (reviews == null) {
-            mReviewsData = null;
-            return;
-        }
-
-        // Add the data passed (moviesData) to each member of mMovieData at the right position
+        // Add the data passed (reviews) to each member of mReviewsData at the right position
         for (int i = 0; i < reviews.author.size(); i++) {
             mReviewsData.author.add(i, reviews.author.get(i));
             mReviewsData.id.add(i, reviews.id.get(i));
@@ -194,5 +194,4 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdap
 
         notifyDataSetChanged();
     }
-
 }

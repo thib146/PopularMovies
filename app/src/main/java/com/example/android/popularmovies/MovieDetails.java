@@ -97,10 +97,12 @@ public class MovieDetails extends AppCompatActivity implements
     // Only this size of poster will be used
     private String mPosterVersion = "w500";
 
+    // Global variable containing the ID of the movie selected
     private String id = "";
 
     private static boolean mConnected = true;
 
+    // Columns of data we want to display in the Detailed view
     public static final String[] DETAIL_FAVORITES_PROJECTION = {
             PopularMoviesContract.MovieEntry.COLUMN_MOVIE_ID,
             PopularMoviesContract.MovieEntry.COLUMN_POSTER_PATH,
@@ -112,9 +114,11 @@ public class MovieDetails extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
 
+        // Initialization of the Favorites buttons (the default and the clicked one)
         mFavoritesButton = (ImageView) findViewById(R.id.favorite_button_default);
         mFavedButton = (ImageView) findViewById(R.id.favorite_button_clicked);
 
+        // Initialization of the "Read More" button for the long reviews
         mReadMoreButton = new ArrayList<>();
 
         // Get the intent that started this Detailed View
@@ -123,7 +127,7 @@ public class MovieDetails extends AppCompatActivity implements
         // Get the ID that was passed though the intent
         id = intentThatStartedThatActivity.getStringExtra(Intent.EXTRA_TEXT);
 
-        // Check if the movie is already a Favorite one by searching in the database
+        // Check if the movie is already a Favorite one by searching for this ID in the database with "query"
         String[] mSelectionArgs = {""};
         mSelectionArgs[0] = id;
         mCursor = MovieDetails.this.getContentResolver().query(
@@ -132,12 +136,12 @@ public class MovieDetails extends AppCompatActivity implements
                 PopularMoviesContract.MovieEntry.COLUMN_MOVIE_ID + " = ?",
                 mSelectionArgs,
                 null);
-        if (null == mCursor) {
-            Log.e(TAG, "The isFaved research provoked a prob");
-        } else if (mCursor.getCount() < 1) {
+        if (null == mCursor) { // If the cursor returned is null --> log
+            Log.e(TAG, "The search for a favorite movie in the database return a null cursor");
+        } else if (mCursor.getCount() < 1) { // If the cursor has no data, the movie isn't a favorite
             isFaved = false;
             showFavoritesButton();
-        } else {
+        } else { // If the cursor has data, the movie is already a favorite
             isFaved = true;
             showFavedButton();
         }
@@ -154,7 +158,8 @@ public class MovieDetails extends AppCompatActivity implements
             }
         });
 
-        // FAVORITE BUTTON
+        // FAVORITE BUTTONS
+        // If the default favorite button is clicked -> make this movie a favorite with bulkInsert
         mFavoritesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -177,6 +182,7 @@ public class MovieDetails extends AppCompatActivity implements
                 showFavedButton();
             }
         });
+        // If the clicked favorite button is clicked -> remove this movie from the favorites with delete
         mFavedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -194,18 +200,7 @@ public class MovieDetails extends AppCompatActivity implements
             }
         });
 
-        // READ MORE BUTTON
-//        mReadMoreButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                int reviewAdapterPosition = mReviewAdapter.adapterPosition;
-//
-//                Toast.makeText(MovieDetails.this, getString(R.string.toast_remove_favorite), Toast.LENGTH_SHORT).show();
-//                //showFavoritesButton();
-//            }
-//        });
-
-        // RecyclerView references
+        // RecyclerView references for the Videos & the Reviews ones
         mVideoRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_videos);
         mReviewRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_reviews);
 
@@ -223,7 +218,7 @@ public class MovieDetails extends AppCompatActivity implements
          * change the child layout size in the RecyclerView
          */
         mVideoRecyclerView.setHasFixedSize(false);
-        mReviewRecyclerView.setHasFixedSize(false);
+        mReviewRecyclerView.setHasFixedSize(true);
 
         mVideoAdapter = new VideoAdapter(this);
         mReviewAdapter = new ReviewAdapter(this);
@@ -238,6 +233,7 @@ public class MovieDetails extends AppCompatActivity implements
         /* This TextView is used to display errors and will be hidden if there are no errors */
         mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display_detail);
 
+        // All the loading indicators (Movie Detail activty, Videos view and Reviews view)
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator_detail);
         mVideoLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator_videos_detail);
         mReviewLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator_reviews_detail);
@@ -253,7 +249,7 @@ public class MovieDetails extends AppCompatActivity implements
         mVideoNoContentMessage = (TextView) findViewById(R.id.tv_videos_no_content_message);
         mReviewNoContentMessage = (TextView) findViewById(R.id.tv_reviews_no_content_message);
 
-        /* Once all of our views are setup, we can load the weather data. */
+        /* Once all of our views are setup, we can load the movie data. */
         loadMovieDetailData();
         loadVideosData();
         loadReviewsData();
@@ -275,7 +271,7 @@ public class MovieDetails extends AppCompatActivity implements
 
     /**
      * This method will tell some background method to get
-     * the movie details data in the background, with the id.
+     * the movie details data in the background, with the movie id.
      */
     private void loadMovieDetailData() {
         showMovieDataView();
@@ -320,9 +316,9 @@ public class MovieDetails extends AppCompatActivity implements
     }
 
     private void showFavoritesButton() {
-        // Hide the default Favorites button
+        // Hide the Faved button
         mFavedButton.setVisibility(View.INVISIBLE);
-        // Then, show the Faved button
+        // Then, show the default Favorites button
         mFavoritesButton.setVisibility(View.VISIBLE);
     }
 
@@ -342,10 +338,12 @@ public class MovieDetails extends AppCompatActivity implements
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
     }
 
+    // Show a special message when there are no videos to display
     private void showVideoNoContent() {
         mVideoNoContentMessage.setVisibility(View.VISIBLE);
     }
 
+    // Show a special message when there are no reviews to display
     private void showReviewsNoContent() {
         mReviewNoContentMessage.setVisibility(View.VISIBLE);
     }
@@ -360,23 +358,27 @@ public class MovieDetails extends AppCompatActivity implements
     public void onClick(String itemId) {
         int adapterPosition = mVideoAdapter.adapterPosition;
 
+        // If a video item is clicked, launch the Youtube link (app or browser)
         if (itemId.equals(mVideos.key.get(adapterPosition))) {
             // Launch the Youtube video either in the native app or the internet browser
             launchYoutubeVideo(mVideos.key.get(adapterPosition));
-        } else if (itemId.equals(mReviews.id.get(adapterPosition))) {
-
         }
     }
 
+    /**
+     * Method to launch the Youtube video in the Youtube app if installed or in the Internet Browser
+     *
+     * @param id The Youtube video ID corresponding to the Key number in the Json
+     */
     public void launchYoutubeVideo(String id){
         Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + id));
         Uri address = Uri.parse("http://www.youtube.com/watch?v=" + id);
         Intent webIntent = new Intent(Intent.ACTION_VIEW,
                 address);
         try {
-            startActivity(appIntent);
+            startActivity(appIntent); // launch in the Youtube App
         } catch (ActivityNotFoundException ex) {
-            startActivity(webIntent);
+            startActivity(webIntent); // if the App isn't installed, launch in browser
         }
     }
 
@@ -426,7 +428,7 @@ public class MovieDetails extends AppCompatActivity implements
         return releaseDateSep[2] + " " + releaseDateSep[1] + " " + releaseDateSep[0];
     }
 
-    // This method will load the movie details in the background and send them to the Adapter
+    // This method will load the movie details in the background and display them in the MovieDetails activity
     public class FetchMovieDetailTask extends AsyncTask<String, Void, MovieArrays> {
 
         @Override
@@ -547,7 +549,7 @@ public class MovieDetails extends AppCompatActivity implements
                 String jsonMovieResponse = NetworkUtils
                         .getResponseFromHttpUrl(videosRequestUrl);
 
-                // Read the movie details from the Json file
+                // Read the videos from the Json file
                 VideoArrays JsonMovieData = TheMovieDBJsonUtils
                         .getVideosFromJson(MovieDetails.this, jsonMovieResponse);
 
@@ -575,6 +577,7 @@ public class MovieDetails extends AppCompatActivity implements
                 video.type = JsonMovieData.type;
                 video.imagePath = JsonMovieData.imagePath;
 
+                // Copy the data to the global variable
                 mVideos = video;
 
                 // Return the movie variable for it to be used in onPostExecute
@@ -591,15 +594,13 @@ public class MovieDetails extends AppCompatActivity implements
             mVideoLoadingIndicator.setVisibility(View.INVISIBLE);
             if (videoData != null && videoData.videoId.size() > 0) {
                 mVideoAdapter.setVideoData(videoData); // Send the data to the Adapter
-            } else if (videoData == null) {
-                showVideoNoContent();
-            } else if (videoData.videoId.size() < 1 ) {
+            } else if (videoData == null || videoData.videoId.size() < 1) {
                 showVideoNoContent();
             }
         }
     }
 
-    // This method will load the videos of the current movie in the background and send them to the VideoAdapter
+    // This method will load the reviews of the current movie in the background and send them to the ReviewAdapter
     public class FetchReviewsDetailTask extends AsyncTask<String, Void, ReviewArrays> {
 
         @Override
@@ -629,7 +630,7 @@ public class MovieDetails extends AppCompatActivity implements
                 String jsonReviewResponse = NetworkUtils
                         .getResponseFromHttpUrl(reviewsRequestUrl);
 
-                // Read the movie details from the Json file
+                // Read the reviews from the Json file
                 ReviewArrays JsonReviewData = TheMovieDBJsonUtils
                         .getReviewsFromJson(MovieDetails.this, jsonReviewResponse);
 
@@ -650,6 +651,7 @@ public class MovieDetails extends AppCompatActivity implements
                 review.readMoreText = getResources().getString(R.string.movie_reviews_read_more);
                 review.readLessText = getResources().getString(R.string.movie_reviews_read_less);
 
+                // Copy the data to the global variable
                 mReviews = review;
 
                 // Return the movie variable for it to be used in onPostExecute
@@ -666,9 +668,7 @@ public class MovieDetails extends AppCompatActivity implements
             mReviewLoadingIndicator.setVisibility(View.INVISIBLE);
             if (reviewData != null && reviewData.author.size() > 0) {
                 mReviewAdapter.setReviewData(reviewData); // Send the data to the Adapter
-            } else if (reviewData == null) {
-                showReviewsNoContent();
-            } else if (reviewData.author.size() < 1 ) {
+            } else if (reviewData == null || reviewData.author.size() < 1) {
                 showReviewsNoContent();
             }
         }

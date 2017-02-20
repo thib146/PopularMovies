@@ -28,7 +28,6 @@
             android:layout_marginRight="4dp"
             android:layout_marginStart="4dp"
             android:layout_marginEnd="4dp"/>
-        <!--android:background="@drawable/poster_empty"-->
 
         <!-- MOVIE TITLE -->
         <TextView

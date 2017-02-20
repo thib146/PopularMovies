@@ -12,15 +12,12 @@ import com.example.android.popularmovies.data.PopularMoviesContract.MovieEntry;
 
 public class PopularMoviesDBHelper extends SQLiteOpenHelper {
     /*
-     * This is the name of our database. Database names should be descriptive and end with the
-     * .db extension.
+     * Database name
      */
     public static final String DATABASE_NAME = "popularmovies.db";
 
     /*
-     * If you change the database schema, you must increment the database version or the onUpgrade
-     * method will not be called.
-     *
+     * Database version
      */
     private static final int DATABASE_VERSION = 1;
 
@@ -29,8 +26,7 @@ public class PopularMoviesDBHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Called when the database is created for the first time. This is where the creation of
-     * tables and the initial population of the tables should happen.
+     * Called when the database is created for the first time.
      *
      * @param sqLiteDatabase The database.
      */
@@ -38,18 +34,12 @@ public class PopularMoviesDBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
 
         /*
-         * This String will contain a simple SQL statement that will create a table that will
-         * cache our weather data.
+         * SQL statement that will create a table caching our favorite movies data.
          */
         final String SQL_CREATE_FAVORITES_TABLE =
 
                 "CREATE TABLE " + MovieEntry.TABLE_NAME + " (" +
 
-                /*
-                 * WeatherEntry did not explicitly declare a column called "_ID". However,
-                 * WeatherEntry implements the interface, "BaseColumns", which does have a field
-                 * named "_ID". We use that here to designate our table's primary key.
-                 */
                         MovieEntry._ID                  + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
 
                         MovieEntry.COLUMN_MOVIE_ID      + " INTEGER NOT NULL, "                  +
@@ -58,20 +48,11 @@ public class PopularMoviesDBHelper extends SQLiteOpenHelper {
 
                         MovieEntry.COLUMN_TITLE         + " STING NOT NULL);";
 
-        /*
-         * After we've spelled out our SQLite table creation statement above, we actually execute
-         * that SQL with the execSQL method of our SQLite database object.
-         */
         sqLiteDatabase.execSQL(SQL_CREATE_FAVORITES_TABLE);
     }
 
     /**
-     * This database is only a cache for online data, so its upgrade policy is simply to discard
-     * the data and call through to onCreate to recreate the table. Note that this only fires if
-     * you change the version number for your database (in our case, DATABASE_VERSION). It does NOT
-     * depend on the version number for your application found in your app/build.gradle file. If
-     * you want to update the schema without wiping data, commenting out the current body of this
-     * method should be your top priority before modifying this method.
+     * onUpgrade Method, if the database is modified
      *
      * @param sqLiteDatabase Database that is being upgraded
      * @param oldVersion     The old database version

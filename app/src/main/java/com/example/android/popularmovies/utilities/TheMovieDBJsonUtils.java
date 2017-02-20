@@ -97,7 +97,7 @@ public class TheMovieDBJsonUtils {
 
         String totalPagesString;
 
-        if (movieJson.has(TMDB_LIST)) { // If we're reading the results after a query
+        if (movieJson.has(TMDB_LIST)) { // If we're reading the results after a query, which means on the Main Activity
             totalPagesString = movieJson.getString(TMDB_TOTAL_PAGES);
 
             movieArray = movieJson.getJSONArray(TMDB_LIST);
@@ -119,7 +119,7 @@ public class TheMovieDBJsonUtils {
 
             for (int i = 0; i < movieArray.length(); i++) {
 
-                    /* Get the JSON object representing one movie */
+                /* Get the JSON object representing one movie */
                 JSONObject oneMovie = movieArray.getJSONObject(i);
 
                 // Copy the read values to the corresponding variables
@@ -167,7 +167,7 @@ public class TheMovieDBJsonUtils {
 
             parsedMovieData.totalPageNumber = totalPagesString;
 
-        } else { // If we're reading the info of one movie
+        } else { // If we're reading the info of one movie, which means on the Movie Details activity
             totalPagesString = "1"; // Set the total pages with a random value
 
             //Copy the read values to the corresponding variables
@@ -256,12 +256,13 @@ public class TheMovieDBJsonUtils {
     public static VideoArrays getVideosFromJson(Context context, String movieJsonStr)
             throws JSONException {
 
-        /* Movies information. Each movie info is an element of the "results" array */
+        /* Movies information. Each video info is an element of the "results" array */
         final String TMDB_LIST = "results";
         final String TMDB_MOVIE_ID = "id";
 
+        // Variables used to get the video thumbnail from Youtube
         final String YOUTUBE_IMAGE_BASE_URL = "http://img.youtube.com/vi/";
-        final String YOUTUBE_FIRST_IMAGE_FILE = "0.jpg";
+        final String YOUTUBE_FIRST_IMAGE_FILE = "0.jpg"; // This is the largest image from the different Youtube thumbnails
 
         final String TMDB_VIDEO_ID = "id";
         final String TMDB_ISO_639_1 = "iso_639_1";
@@ -276,17 +277,18 @@ public class TheMovieDBJsonUtils {
         URL[] urlVideoPath;
 
         // Global Json object
-        JSONObject movieJson = new JSONObject(movieJsonStr);
+        JSONObject videoJson = new JSONObject(movieJsonStr);
 
         // Json array
         JSONArray videoArray;
 
-        VideoArrays parsedMovieData = new VideoArrays();
+        VideoArrays parsedVideoData = new VideoArrays();
 
         String totalPagesString;
 
-        videoArray = movieJson.getJSONArray(TMDB_LIST);
+        videoArray = videoJson.getJSONArray(TMDB_LIST);
 
+        // Url for the video thumbnail path from Youtube
         urlVideoPath = new URL[videoArray.length()];
 
         // Instantiate all the variables that we need
@@ -302,7 +304,7 @@ public class TheMovieDBJsonUtils {
 
         for (int i = 0; i < videoArray.length(); i++) {
 
-                /* Get the JSON object representing one movie */
+            /* Get the JSON object representing one video */
             JSONObject oneVideo = videoArray.getJSONObject(i);
 
             // Copy the read values to the corresponding variables
@@ -315,42 +317,42 @@ public class TheMovieDBJsonUtils {
             size.add(oneVideo.getString(TMDB_SIZE));
             type.add(oneVideo.getString(TMDB_TYPE));
 
-            // Build the URI for the Poster Path
+            // Build the URI for the video thumbnail Path
             Uri builtUri = Uri.parse(YOUTUBE_IMAGE_BASE_URL).buildUpon()
                     .appendPath(oneVideo.getString(TMDB_KEY))
                     .appendPath(YOUTUBE_FIRST_IMAGE_FILE)
                     .build();
 
-            // Create the Poster Path URL
+            // Create the video thumbnail Path URL
             try {
                 urlVideoPath[i] = new URL(builtUri.toString());
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
 
-            // Copy the corrected value to the posterPath variable
+            // Copy the corrected value to the videoPath variable
             videoPath.add(urlVideoPath[i].toString());
             Log.e(TAG, "Url made :" + urlVideoPath[i].toString());
         }
 
-        // Copy the full data in the parsedMovieData variable
-        parsedMovieData.videoId = videoId;
-        parsedMovieData.iso6391 = iso6391;
-        parsedMovieData.iso31661 = iso31661;
-        parsedMovieData.key = key;
-        parsedMovieData.name = name;
-        parsedMovieData.site = site;
-        parsedMovieData.size = size;
-        parsedMovieData.type = type;
-        parsedMovieData.imagePath = videoPath;
+        // Copy the full data in the parsedVideoData variable
+        parsedVideoData.videoId = videoId;
+        parsedVideoData.iso6391 = iso6391;
+        parsedVideoData.iso31661 = iso31661;
+        parsedVideoData.key = key;
+        parsedVideoData.name = name;
+        parsedVideoData.site = site;
+        parsedVideoData.size = size;
+        parsedVideoData.type = type;
+        parsedVideoData.imagePath = videoPath;
 
         // Return the read data
-        return parsedMovieData;
+        return parsedVideoData;
     }
 
     /**
      * This method parses JSON from a web response and returns an array of Strings
-     * containing the videos of the selected movie
+     * containing the reviews of the selected movie
      *
      * @param reviewJsonStr JSON response from server
      *
@@ -385,7 +387,6 @@ public class TheMovieDBJsonUtils {
         ArrayList<String> id = new ArrayList<String>();
         ArrayList<String> content = new ArrayList<String>();
         ArrayList<String> url = new ArrayList<String>();
-        ArrayList<Boolean> isReviewTooLong = new ArrayList<Boolean>();
 
         for (int i = 0; i < reviewArray.length(); i++) {
 
@@ -397,12 +398,6 @@ public class TheMovieDBJsonUtils {
             id.add(oneReview.getString(TMDB_REVIEW_ID));
             content.add(oneReview.getString(TMDB_CONTENT));
             url.add(oneReview.getString(TMDB_REVIEW_URL));
-
-            if (oneReview.getString(TMDB_CONTENT).length() >= 100) {
-                isReviewTooLong.add(true);
-            } else {
-                isReviewTooLong.add(false);
-            }
         }
 
         // Copy the full data in the parsedMovieData variable

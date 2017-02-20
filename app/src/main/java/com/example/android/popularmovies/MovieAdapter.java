@@ -63,7 +63,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
      */
     public class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public final ImageView mMovieImageView;
-        //public final ImageView mMovieBackdropImageView;
         public final TextView mMovieTitleTextView;
         public final TextView mMovieOriginalTitle;
         public final TextView mReleaseDate;
@@ -74,7 +73,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
             super(view);
             mMovieImageView = (ImageView) view.findViewById(R.id.iv_movie_data);
             mMovieTitleTextView = (TextView) view.findViewById(R.id.tv_movie_title_main);
-            //mMovieBackdropImageView = (ImageView) view.findViewById(R.id.movie_details_toolbar);
             mMovieOriginalTitle = (TextView) view.findViewById(R.id.tv_movie_original_title_details);
             mReleaseDate = (TextView) view.findViewById(R.id.tv_date_details);
             mMovieDescription = (TextView) view.findViewById(R.id.tv_description_details);
@@ -92,12 +90,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
             adapterPosition = getAdapterPosition();
             String sortQuery = MainActivity.getSortQuery();
 
-            if (sortQuery.equals("favorites")) {
+            if (sortQuery.equals("favorites")) { /* On the favorites Movie section, get the movie ID from the database */
                 mCursor.moveToPosition(adapterPosition);
                 int movieId = mCursor.getInt(MainActivity.INDEX_MOVIE_ID);
                 String movieIdString = String.valueOf(movieId);
                 mClickHandler.onClick(movieIdString);
-            } else {
+            } else { /* On the favorites Movie section, get the adapter position */
                 String movieDetails = mMoviesData.posterPath.get(adapterPosition);
                 mClickHandler.onClick(movieDetails);
             }
@@ -137,7 +135,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     public void onBindViewHolder(final MovieAdapterViewHolder movieAdapterViewHolder, int position) {
         String sortQuery = MainActivity.getSortQuery();
 
-        if (sortQuery.equals("favorites")) {
+        if (sortQuery.equals("favorites")) { /* If we're on the favorites page, get the data from the database (= cursor) */
             mCursor.moveToPosition(position);
 
             String oneMoviePoster = mCursor.getString(MainActivity.INDEX_POSTER_PATH);
@@ -147,14 +145,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
             // Display the movie poster and the movie title in the RecyclerView
             Picasso.with(context).load(oneMoviePoster).into(movieAdapterViewHolder.mMovieImageView);
             movieAdapterViewHolder.mMovieTitleTextView.setText(oneMovieTitle);
-        } else {
+        } else { /*If we're on the popular or highest rates movie pages, get the data from the internet (= mMoviesData variable) */
             String oneMoviePoster = mMoviesData.posterPath.get(position);
-            //String oneMovieBackdrop = mMoviesData.backdropPath.get(position);
             String oneMovieTitle = mMoviesData.title.get(position);
-            //String onMovieOriginalTitle = mMoviesData.originalTitle.get(position);
-            //String onMovieReleaseDate = mMoviesData.releaseDate.get(position);
-            //String onMovieDescription = mMoviesData.description.get(position);
-            //String onMovieRatings = mMoviesData.voteAverage.get(position);
 
             final Context context = movieAdapterViewHolder.mMovieImageView.getContext();
 
@@ -162,10 +155,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
             Picasso.with(context).load(oneMoviePoster).into(movieAdapterViewHolder.mMovieImageView);
 
             movieAdapterViewHolder.mMovieTitleTextView.setText(oneMovieTitle);
-            //movieAdapterViewHolder.mMovieOriginalTitle.setText(onMovieOriginalTitle);
-            //movieAdapterViewHolder.mReleaseDate.setText(onMovieReleaseDate);
-            //movieAdapterViewHolder.mMovieDescription.setText(onMovieDescription);
-            //movieAdapterViewHolder.mMovieRatings.setText(onMovieRatings);
         }
     }
 
@@ -189,12 +178,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     }
 
     /**
-     * Swaps the cursor used by the ForecastAdapter for its weather data. This method is called by
-     * MainActivity after a load has finished, as well as when the Loader responsible for loading
-     * the weather data is reset. When this method is called, we assume we have a completely new
-     * set of data, so we call notifyDataSetChanged to tell the RecyclerView to update.
+     * Swaps the cursor used by the MovieAdapter for its movie data.
      *
-     * @param newCursor the new cursor to use as ForecastAdapter's data source
+     * @param newCursor the new cursor to use as MovieAdapter data source
      */
     void swapCursor(Cursor newCursor) {
         mCursor = newCursor;
@@ -213,7 +199,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         // Instantiate of all the variable that we need
         mMoviesData = new MovieArrays();
         mMoviesData.posterPath = new ArrayList<String>();
-        //mMoviesData.backdropPath = new ArrayList<String>();
         mMoviesData.description = new ArrayList<String>();
         mMoviesData.title = new ArrayList<String>();
         mMoviesData.releaseDate = new ArrayList<String>();
@@ -232,7 +217,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         // Add the data passed (moviesData) to each member of mMovieData at the right position
         for (int i=0; i<20; i++) {
             mMoviesData.posterPath.add(i, moviesData.posterPath.get(i));
-            //mMoviesData.backdropPath.add(i, moviesData.backdropPath.get(i));
             mMoviesData.description.add(i, moviesData.description.get(i));
             mMoviesData.releaseDate.add(i, moviesData.releaseDate.get(i));
             mMoviesData.id.add(i, moviesData.id.get(i));
@@ -261,7 +245,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
         for (int i = 0; i < 20; i++) {
             mMoviesData.posterPath.add(i+lengthMoviesData, moviesData.posterPath.get(i));
-            //mMoviesData.backdropPath.add(i+lengthMoviesData, moviesData.backdropPath.get(i));
             mMoviesData.description.add(i+lengthMoviesData, moviesData.description.get(i));
             mMoviesData.releaseDate.add(i+lengthMoviesData, moviesData.releaseDate.get(i));
             mMoviesData.id.add(i+lengthMoviesData, moviesData.id.get(i));

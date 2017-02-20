@@ -14,6 +14,7 @@
         android:id="@+id/ll_detail_layout">
 
         <!-- BEGIN TOOLBAR -->
+        <!-- BACKDROP IMAGE -->
         <ImageView
             android:id="@+id/movie_details_toolbar"
             android:layout_width="0dp"
@@ -24,6 +25,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"/>
+        <!-- BACKDROP DARKENING IMAGE -->
         <ImageView
             android:id="@+id/toolbar_darken"
             android:layout_width="0dp"
@@ -34,7 +36,7 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintBottom_toBottomOf="@+id/movie_details_toolbar" />
-
+        <!-- BACK BUTTON -->
         <ImageView
             android:id="@+id/iv_back_movie_details"
             android:layout_width="wrap_content"
@@ -45,7 +47,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp" />
-
+        <!-- ACTIVITY TITLE -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -71,7 +73,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"/>
 
-        <!-- TITLE -->
+        <!-- MOVIE TITLE -->
         <TextView
             android:id="@+id/tv_movie_title_details"
             tools:text="Interstellar"
@@ -88,7 +90,7 @@
             android:layout_marginEnd="16dp"
             app:layout_constraintHorizontal_bias="0.0"/>
 
-        <!-- ACTION BUTTON - DEFAULT -->
+        <!-- FAVORITES ACTION BUTTON - DEFAULT -->
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/favorite_button_default"
             android:layout_width="56dp"
@@ -103,7 +105,7 @@
             android:layout_marginRight="16dp"
             android:layout_marginEnd="16dp"/>
 
-        <!-- ACTION BUTTON - CLICKED -->
+        <!-- FAVORITES ACTION BUTTON - CLICKED -->
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/favorite_button_clicked"
             android:layout_width="56dp"
@@ -119,7 +121,7 @@
             android:layout_marginEnd="16dp"
             android:visibility="invisible"/>
 
-        <!-- LOADING INDICATOR -->
+        <!-- ACTIVITY LOADING INDICATOR -->
         <ProgressBar
             android:id="@+id/pb_loading_indicator_detail"
             android:layout_width="wrap_content"
@@ -144,7 +146,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp" />
 
-        <!-- ORIGINAL TITLE -->
+        <!-- ORIGINAL MOVIE TITLE -->
         <TextView
             android:id="@+id/tv_movie_original_title_details"
             tools:text="Original title: Interstellar"
@@ -237,7 +239,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"/>
 
-        <!-- VIDEOS -->
+        <!-- VIDEOS SECTION TITLE -->
         <TextView
             android:id="@+id/tv_videos_details"
             android:layout_width="wrap_content"
@@ -277,6 +279,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"/>
 
+        <!-- NO VIDEOS MESSAGE -->
         <TextView
             android:id="@+id/tv_videos_no_content_message"
             android:layout_width="wrap_content"
@@ -305,7 +308,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"/>
 
-        <!-- REVIEWS -->
+        <!-- REVIEWS SECTION TITLE -->
         <TextView
             android:id="@+id/tv_reviews_details"
             android:layout_width="wrap_content"
@@ -346,6 +349,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"/>
 
+        <!-- NO REVIEWS MESSAGE -->
         <TextView
             android:id="@+id/tv_reviews_no_content_message"
             android:layout_width="wrap_content"

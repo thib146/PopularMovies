@@ -10,17 +10,15 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created by thiba on 13/02/2017.
+ * Created by thib146 on 13/02/2017.
  */
 
 public class FakeDataUtils {
 
-    //private static int [] weatherIDs = {200,300,500,711,900,962};
-
     /**
-     * Creates a single ContentValues object with random weather data for the provided date
+     * Creates a single ContentValues object with random movie data for the provided id
      * @param id movie id
-     * @return ContentValues object filled with random weather data
+     * @return ContentValues object filled with movie data
      */
     private static ContentValues createTestFavoritesContentValues(long id) {
         ContentValues testFavoritesValues = new ContentValues();
@@ -31,24 +29,25 @@ public class FakeDataUtils {
     }
 
     /**
-     * Creates random movie data for 4 movies
+     * Creates movie data for 6 movies
      * @param context
      */
     public static void insertFakeData(Context context, ArrayList<String> movieId) {
 
         List<ContentValues> fakeValues = new ArrayList<ContentValues>();
         movieId = new ArrayList<>();
-        //loop over 4 movies
+        //loop over 6 movies
         for(int i=0; i<6; i++) {
             fakeValues.add(createTestFavoritesContentValues(341174));
             movieId.add(i, "341174");
         }
-        // Bulk Insert our new weather data into PopularMovies' Database
+        // Bulk Insert our new movie data into PopularMovies' Database
         context.getContentResolver().bulkInsert(
                 PopularMoviesContract.MovieEntry.CONTENT_URI,
                 fakeValues.toArray(new ContentValues[6]));
     }
 
+    // Method used to delete all the data when we restart the app
     public static void deleteAllData(Context context) {
         context.getContentResolver().delete(PopularMoviesContract.MovieEntry.CONTENT_URI, null, null);
     }

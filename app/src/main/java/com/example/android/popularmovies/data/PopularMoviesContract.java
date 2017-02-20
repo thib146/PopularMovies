@@ -11,48 +11,48 @@ import android.provider.BaseColumns;
 
 public class PopularMoviesContract {
     /**
-     * This it the content authority for DroidTermsExample provider.
+     * Content authority for PopularMovies provider.
      */
     public static final String CONTENT_AUTHORITY = "com.example.android.popularmovies";
 
     /**
-     * This is the {@link Uri} on which all other DroidTermsExample Uris are built.
+     * {@link Uri} on which all other PopularMovies Uris are built.
      */
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
     /**
-     * The path for terms
+     * Path for favorites
      */
     public static final String PATH_FAVORITES = "favorites";
 
     public static final class MovieEntry implements BaseColumns {
 
         /**
-         * This is the {@link Uri} used to get a full list of terms and definitions.
+         * {@link Uri} used to get a full list of favorite movies.
          */
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_FAVORITES).build();
 
         /**
-         * This is the name of the SQL table for terms.
+         * Name of the SQL table for favorites.
          */
         public static final String TABLE_NAME = "favorites";
 
         /**
-         * This is the column name in the SQLiteDatabase for the movie ID.
+         * Column name in the SQLiteDatabase for the movie ID.
          */
         public static final String COLUMN_MOVIE_ID = "movie_id";
         /**
-         * This is the column name in the SQLiteDatabase for the movie poster path.
+         * Column name in the SQLiteDatabase for the movie poster path.
          */
         public static final String COLUMN_POSTER_PATH = "poster_path";
         /**
-         * This is the column name in the SQLiteDatabase for the movie title.
+         * Column name in the SQLiteDatabase for the movie title.
          */
         public static final String COLUMN_TITLE = "title";
 
         /**
-         * This is an array containing all the column headers in the terms table.
+         * Array containing all the column headers in the favorites table.
          */
         public static final String[] COLUMNS =
                 {_ID, COLUMN_MOVIE_ID, COLUMN_POSTER_PATH, COLUMN_TITLE};

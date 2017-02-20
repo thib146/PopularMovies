@@ -14,6 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
+        <!-- VIDEO BACKGROUND (YOUTUBE THUMBNAIL) -->
         <ImageView
             android:id="@+id/iv_video_view"
             android:layout_width="200dp"
@@ -27,6 +28,7 @@
             android:layout_marginRight="4dp"
             android:layout_marginEnd="4dp"/>
 
+        <!-- PLAY VIDEO ICON -->
         <ImageView
             android:id="@+id/iv_play_icon"
             android:src="@drawable/ic_play_arrow_black_24dp"
@@ -40,6 +42,7 @@
             app:layout_constraintRight_toRightOf="@+id/iv_video_view"
             app:layout_constraintBottom_toBottomOf="@+id/iv_video_view" />
 
+        <!-- CIRCLE ICON -->
         <ImageView
             android:id="@+id/iv_circle_icon"
             android:src="@drawable/ic_panorama_fish_eye_black_24dp"

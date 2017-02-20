@@ -19,8 +19,7 @@ import java.util.ArrayList;
 
 public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoAdapterViewHolder> {
 
-    // Global variable containing all the movies currently loaded
-    // -- Arrays are used to be able to easily add more movies as the user scrolls down
+    // Global variable containing all the videos currently loaded
     private VideoArrays mVideosData;
 
     // Global int for the position of an item
@@ -40,7 +39,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoAdapter
     }
 
     /**
-     * Creates a MovieAdapter.
+     * Creates a VideoAdapter.
      *
      * @param clickHandler The on-click handler for this adapter. This single handler is called
      *                     when an item is clicked.
@@ -50,7 +49,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoAdapter
     }
 
     /**
-     * Cache of the children views for a movie list item.
+     * Cache of the children views for a video list item.
      */
     public class VideoAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public final ImageView mVideoImageView;
@@ -70,7 +69,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoAdapter
         public void onClick(View v) {
             adapterPosition = getAdapterPosition();
 
-            String video = mVideosData.key.get(adapterPosition);
+            String video = mVideosData.key.get(adapterPosition); // Send the video Key for the Youtube launch
 
             mClickHandler.onClick(video);
         }
@@ -97,9 +96,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoAdapter
 
     /**
      * OnBindViewHolder is called by the RecyclerView to display the data at the specified
-     * position. In this method, we update the contents of the ViewHolder to display the movie
-     * details for this particular position, using the "position" argument that is conveniently
-     * passed into us.
+     * position.
      *
      * @param videoAdapterViewHolder    The ViewHolder which should be updated to represent the
      *                                  contents of the item at the given position in the data set.
@@ -108,12 +105,12 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoAdapter
     @Override
     public void onBindViewHolder(VideoAdapterViewHolder videoAdapterViewHolder, int position) {
 
-        String oneMoviePoster = mVideosData.imagePath.get(position);
+        String oneVideoPoster = mVideosData.imagePath.get(position);
 
         Context context = videoAdapterViewHolder.mVideoImageView.getContext();
 
-        // Display the movie poster and the movie title in the RecyclerView
-        Picasso.with(context).load(oneMoviePoster).into(videoAdapterViewHolder.mVideoImageView);
+        // Display the video poster in the RecyclerView
+        Picasso.with(context).load(oneVideoPoster).into(videoAdapterViewHolder.mVideoImageView);
     }
 
     /**
@@ -129,11 +126,10 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoAdapter
     }
 
     /**
-     * This method is used to set the movie data on a MovieAdapter if we've already
-     * created one. This is handy when we get new data from the web but don't want to create a
-     * new MovieAdapter to display it.
+     * This method is used to set the video data on a VideoAdapter if we've already
+     * created one.
      *
-     * @param videos The new movie data to be displayed.
+     * @param videos The new video data to be displayed.
      */
     public void setVideoData(VideoArrays videos) {
 
@@ -155,7 +151,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoAdapter
             return;
         }
 
-        // Add the data passed (moviesData) to each member of mMovieData at the right position
+        // Add the data passed (videos) to each member of mVideosData at the right position
         for (int i = 0; i < videos.videoId.size(); i++) {
             mVideosData.videoId.add(i, videos.videoId.get(i));
             mVideosData.iso6391.add(i, videos.iso6391.get(i));
