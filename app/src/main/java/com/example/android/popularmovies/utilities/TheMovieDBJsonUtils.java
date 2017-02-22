@@ -6,7 +6,6 @@ import android.util.Log;
 import android.widget.TextView;
 
 import com.example.android.popularmovies.MainActivity;
-import com.example.android.popularmovies.MovieDetails;
 
 import org.json.JSONArray;
 import org.json.JSONException;
