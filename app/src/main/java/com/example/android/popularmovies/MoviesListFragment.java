@@ -40,6 +40,7 @@ import java.util.ArrayList;
 
 import static android.content.Context.WINDOW_SERVICE;
 import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
+import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
 import static com.example.android.popularmovies.utilities.NetworkUtils.getResponseFromHttpUrl;
 import static com.example.android.popularmovies.utilities.NetworkUtils.isNetworkAvailable;
 
@@ -80,12 +81,14 @@ public class MoviesListFragment extends Fragment implements
     public static final int INDEX_POSTER_PATH = 1;
     public static final int INDEX_TITLE = 2;
 
-    private static final int ID_FAVORITES_LOADER = 146;
+    public static final int ID_FAVORITES_LOADER = 146;
 
     // RecyclerView + Adapter declarations
     private RecyclerView mRecyclerView;
     private MovieAdapter mMovieAdapter;
     private int mPosition = RecyclerView.NO_POSITION;
+
+    public static int mFirstItemVisiblePosition;
 
     // Cursor to get the data from the Popular Movie Content Provider
     private Cursor mCursorMovieData;
@@ -138,9 +141,26 @@ public class MoviesListFragment extends Fragment implements
         View view = inflater.inflate(R.layout.movies_list_fragment, container, false);
 
         boolean isTablet = getResources().getBoolean(R.bool.isTablet);
+        int orientation = getResources().getConfiguration().orientation;
 
-        if (isTablet) {
+        // Diplay 3 columns in Portrait Mode on Tablets
+        if (isTablet && orientation == ORIENTATION_PORTRAIT) {
             numColumns = 3;
+        }
+
+        int pushedButtonIndex = 0;
+
+        // Check if a tab had already been chosen (in case of a device rotation)
+        if (savedInstanceState != null) {
+            if (sortQuery.equals("popular")) {
+                pushedButtonIndex = 0;
+            } else if (sortQuery.equals("top_rated")) {
+                pushedButtonIndex = 1;
+            } else if (sortQuery.equals("favorites")) {
+                pushedButtonIndex = 2;
+            }
+        } else {
+            pushedButtonIndex = 0;
         }
 
         /**
@@ -149,8 +169,8 @@ public class MoviesListFragment extends Fragment implements
         SegmentedButton buttons = (SegmentedButton) view.findViewById(R.id.segmented);
         buttons.clearButtons();
         buttons.addButtons(getString(R.string.popular_button), getString(R.string.ratings_button), getString(R.string.favorites_button));
-        // Select the first button by default
-        buttons.setPushedButtonIndex(0);
+        // Select the last button clicked, or the first button by default
+        buttons.setPushedButtonIndex(pushedButtonIndex);
         // Actions to do when to buttons are pressed
         buttons.setOnClickListener(new SegmentedButton.OnClickListenerSegmentedButton() {
             @Override
@@ -196,8 +216,16 @@ public class MoviesListFragment extends Fragment implements
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intentToStartSettingsActivity = new Intent(getActivity(), MainSettings.class); // Launch Settings Activity
-                getActivity().startActivity(intentToStartSettingsActivity);
+                int orientation = getResources().getConfiguration().orientation;
+
+                if (getResources().getBoolean(R.bool.isTablet) && orientation == ORIENTATION_LANDSCAPE) {
+                    SettingsFragment settingsFragment = new SettingsFragment();
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.movie_detail_fragment, settingsFragment).commit();
+                } else {
+                    Intent intentToStartSettingsActivity = new Intent(getActivity(), MainSettings.class); // Launch Settings Activity
+                    getActivity().startActivity(intentToStartSettingsActivity);
+                }
             }
         });
 
@@ -208,11 +236,10 @@ public class MoviesListFragment extends Fragment implements
         mErrorMessageDisplay = (TextView) view.findViewById(R.id.tv_error_message_display);
 
         /*
-         * GridLayoutManager declaration for our movie posters. Limited to 2 columns
+         * GridLayoutManager declaration for our movie posters.
          * A custom GridLayoutManager is used to prevent a bug explained in the class
          */
-        final CustomGridLayoutManager layoutManager
-                = new CustomGridLayoutManager(getActivity(), numColumns, GridLayoutManager.VERTICAL, false);
+        final GridLayoutManager layoutManager = new CustomGridLayoutManager(getActivity(), numColumns, GridLayoutManager.VERTICAL, false);
 
         mRecyclerView.setLayoutManager(layoutManager);
 
@@ -253,12 +280,6 @@ public class MoviesListFragment extends Fragment implements
          */
         mLoadingIndicator = (ProgressBar) view.findViewById(R.id.pb_loading_indicator);
 
-        /* Once all of our views are setup, we can load the movie data. */
-        //loadMovieData();
-
-        // Initialize the cursor loader for the Favorites list
-        //getActivity().getSupportLoaderManager().initLoader(ID_FAVORITES_LOADER, null, this);
-
         return view;
     }
 
@@ -266,11 +287,18 @@ public class MoviesListFragment extends Fragment implements
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        /* Once all of our views are setup, we can load the movie data. */
-        loadMovieData();
+        // If the choice is Popular orf Highest Rates, load the data from the internet
+        if (!sortQuery.equals("favorites")) {
+            loadMovieData();
+        }
 
-        // Initialize the cursor loader for the Favorites list
-        getActivity().getSupportLoaderManager().initLoader(ID_FAVORITES_LOADER, null, MoviesListFragment.this);
+        // If the choice is Favorites, load the data from the database
+        if (savedInstanceState == null) {
+            // Initialize the cursor loader for the Favorites list
+            getActivity().getSupportLoaderManager().initLoader(ID_FAVORITES_LOADER, null, MoviesListFragment.this);
+        } else {
+            getActivity().getSupportLoaderManager().restartLoader(ID_FAVORITES_LOADER, null, MoviesListFragment.this);
+        }
     }
 
     @Override
@@ -289,7 +317,6 @@ public class MoviesListFragment extends Fragment implements
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-
     }
 
     // Loader for the Favorite Movies Database
@@ -326,7 +353,9 @@ public class MoviesListFragment extends Fragment implements
      */
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mMovieAdapter.swapCursor(data);
+        if (isAdded()) {
+            mMovieAdapter.swapCursor(data);
+        }
         mCursorMovieData = data;
 
         if (mPosition == RecyclerView.NO_POSITION) mPosition = 0;
@@ -348,7 +377,9 @@ public class MoviesListFragment extends Fragment implements
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         //Clear the Adapter
-        mMovieAdapter.swapCursor(null);
+        if (isAdded()) {
+            mMovieAdapter.swapCursor(null);
+        }
     }
 
     /*
@@ -426,15 +457,18 @@ public class MoviesListFragment extends Fragment implements
     public void onClick(String movieId) {
         int adapterPosition = mMovieAdapter.adapterPosition;
 
+        // If we're in the favorites list, get the movie id through the cursor
         if (sortQuery.equals("favorites")) {
             mCursorMovieData.moveToPosition(adapterPosition);
             movieId = String.valueOf(mCursorMovieData.getString(INDEX_MOVIE_ID));
-        } else {
+        } else { // If not, get the movie id through mMovieId
             movieId = mMovieId.get(adapterPosition);
         }
 
+        // Get the device's current orientation
         int orientation = getResources().getConfiguration().orientation;
 
+        // If we're in Landscape Mode, refresh the Detail Fragment with the new data
         if (getResources().getBoolean(R.bool.isTablet) && orientation == ORIENTATION_LANDSCAPE) {
             Bundle arguments = new Bundle();
             arguments.putString(MovieDetailsFragment.ARG_ITEM_ID, movieId);
@@ -442,16 +476,11 @@ public class MoviesListFragment extends Fragment implements
             fragment.setArguments(arguments);
             getActivity().getSupportFragmentManager().beginTransaction()
                     .replace(R.id.movie_detail_fragment, fragment).commit();
-        } else {
+        } else { // If we're in Pörtrait mode, open a new Detail Activity
             Intent detailIntent = new Intent(getActivity(), MovieDetails.class);
             detailIntent.putExtra(Intent.EXTRA_TEXT, movieId);
             if (mConnected) {
                 startActivity(detailIntent);
-
-                getActivity().getSupportFragmentManager()
-                        .beginTransaction()
-                        .addToBackStack("main_list")
-                        .commit();
 
             } else {
                 showErrorMessage();
@@ -463,12 +492,9 @@ public class MoviesListFragment extends Fragment implements
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mCursorMovieData.close();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
+        if (mCursorMovieData != null) {
+            mCursorMovieData.close();
+        }
     }
 
     /**

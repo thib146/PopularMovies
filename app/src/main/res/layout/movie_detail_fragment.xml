@@ -36,7 +36,8 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintBottom_toBottomOf="@+id/movie_details_toolbar" />
-        <!-- BACK BUTTON -->
+
+        <!-- BACK BUTTON (ONLY IN PORTRAIT MODE) -->
         <ImageView
             android:id="@+id/iv_back_movie_details"
             android:layout_width="wrap_content"
@@ -47,16 +48,31 @@
             android:layout_marginTop="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp" />
-        <!-- ACTIVITY TITLE -->
+        <!-- PORTRAIT MODE ACTIVITY TITLE  -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/movie_details"
             android:textColor="@color/colorPrimaryLight"
             android:textSize="20sp"
-            android:id="@+id/toolbar_title_movie_details"
-            app:layout_constraintTop_toTopOf="@+id/iv_back_movie_details"
-            app:layout_constraintLeft_toRightOf="@+id/iv_back_movie_details"
+            android:id="@+id/toolbar_title_movie_details_portrait"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="52dp"
+            android:layout_marginStart="52dp"/>
+        <!-- LANDSCAPE MODE ACTIVITY TITLE -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/movie_details"
+            android:textColor="@color/colorPrimaryLight"
+            android:textSize="20sp"
+            android:visibility="invisible"
+            android:id="@+id/toolbar_title_movie_details_landscape"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginTop="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"/>
         <!-- END TOOLBAR -->

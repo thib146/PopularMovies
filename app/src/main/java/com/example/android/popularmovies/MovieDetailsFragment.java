@@ -36,6 +36,8 @@ import com.squareup.picasso.Picasso;
 import java.net.URL;
 import java.util.ArrayList;
 
+import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
+import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
 import static com.example.android.popularmovies.utilities.NetworkUtils.isNetworkAvailable;
 
 /**
@@ -49,13 +51,14 @@ public class MovieDetailsFragment extends Fragment implements
 
     private static final String TAG = MovieDetailsFragment.class.getSimpleName();
 
+    // Key used to get the movie ID through the fragment creation
     public static final String ARG_ITEM_ID = "item_id";
 
-    //private OnItemSelectedListener listener;
+    private OnItemSelectedListener listener;
 
-    //public interface OnItemSelectedListener {
-    //    public void onItemSelected(String movieId);
-    //}
+    public interface OnItemSelectedListener {
+        public void onItemSelected(String movieId);
+    }
 
     private TextView mErrorMessageDisplay;
 
@@ -86,6 +89,11 @@ public class MovieDetailsFragment extends Fragment implements
     private ImageView mMovieBackdrop;
     private ImageView mFavoritesButton;
     private ImageView mFavedButton;
+    private ImageView mDivider1;
+    private ImageView mDivider2;
+    private ImageView mDivider3;
+    private TextView mVideoTitle;
+    private TextView mReviewTitle;
 
     private ArrayList<TextView> mReadMoreButton;
 
@@ -129,40 +137,33 @@ public class MovieDetailsFragment extends Fragment implements
         // Initialization of the "Read More" button for the long reviews
         mReadMoreButton = new ArrayList<>();
 
-        // Get the intent that started this Detailed View
-        //Intent intentThatStartedThatActivity = getActivity().getIntent();
-
-        // Get the ID that was passed though the intent
-        //id = intentThatStartedThatActivity.getStringExtra(Intent.EXTRA_TEXT);
-
-//        Bundle arguments = new Bundle();
-//        arguments.putString(MovieDetailsFragment.ARG_ITEM_ID, id);
-//        MovieDetailsFragment fragment = new MovieDetailsFragment();
-//        fragment.setArguments(arguments);
-//        getFragmentManager().beginTransaction()
-//                .replace(R.id.movie_detail_fragment, fragment).commit();
-
+        // Get the intent that started the activity
         Intent intentThatStartedThatActivity = getActivity().getIntent();
         Bundle bundle = getArguments();
 
-        if (bundle != null) {
+        if (bundle != null) { // If the fragment was created in Landscape Mode, get the movie id with the Fragment's arguments
             id = bundle.getString(MovieDetailsFragment.ARG_ITEM_ID);
-        } else {
+        } else { // If the fragment was created in Portrait mode (intent), get the movie id with the Intent's extra
             id = intentThatStartedThatActivity.getStringExtra(Intent.EXTRA_TEXT);
         }
+
+        // Store the movie Id in the global variable for other uses
+        MainActivity.mId = id;
 
         // Check if the movie is already a Favorite one by searching for this ID in the database with "query"
         String[] mSelectionArgs = {""};
         mSelectionArgs[0] = id;
-        mCursor = getActivity().getContentResolver().query(
-                PopularMoviesContract.MovieEntry.CONTENT_URI,
-                DETAIL_FAVORITES_PROJECTION,
-                PopularMoviesContract.MovieEntry.COLUMN_MOVIE_ID + " = ?",
-                mSelectionArgs,
-                null);
+        if (id != null) {
+            mCursor = getActivity().getContentResolver().query(
+                    PopularMoviesContract.MovieEntry.CONTENT_URI,
+                    DETAIL_FAVORITES_PROJECTION,
+                    PopularMoviesContract.MovieEntry.COLUMN_MOVIE_ID + " = ?",
+                    mSelectionArgs,
+                    null);
+        }
         if (null == mCursor) { // If the cursor returned is null --> log
             Log.e(TAG, "The search for a favorite movie in the database return a null cursor");
-        } else if (mCursor.getCount() < 1) { // If the cursor has no data, the movie isn't a favorite
+        } else if (id != null && mCursor.getCount() < 1) { // If the cursor has no data, the movie isn't a favorite
             isFaved = false;
             showFavoritesButton();
         } else { // If the cursor has data, the movie is already a favorite
@@ -170,12 +171,13 @@ public class MovieDetailsFragment extends Fragment implements
             showFavedButton();
         }
 
+
         /**
          * Management of menu buttons
          */
-        // BACK BUTTON
-        final ImageView back = (ImageView) view.findViewById(R.id.iv_back_movie_details);
-        back.setOnClickListener(new View.OnClickListener() {
+        // BACK BUTTON (ONLY IN PORTRAIT MODE)
+        final ImageView backButton = (ImageView) view.findViewById(R.id.iv_back_movie_details);
+        backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getActivity().finish();
@@ -272,11 +274,31 @@ public class MovieDetailsFragment extends Fragment implements
         mMovieBackdrop = (ImageView) view.findViewById(R.id.movie_details_toolbar);
         mVideoNoContentMessage = (TextView) view.findViewById(R.id.tv_videos_no_content_message);
         mReviewNoContentMessage = (TextView) view.findViewById(R.id.tv_reviews_no_content_message);
+        mDivider1 = (ImageView) view.findViewById(R.id.divider1);
+        mDivider2 = (ImageView) view.findViewById(R.id.divider2);
+        mDivider3 = (ImageView) view.findViewById(R.id.divider3);
+        mVideoTitle = (TextView) view.findViewById(R.id.tv_videos_details);
+        mReviewTitle = (TextView) view.findViewById(R.id.tv_reviews_details);
 
-        /* Once all of our views are setup, we can load the movie data. */
-        //loadMovieDetailData();
-        //loadVideosData();
-        //loadReviewsData();
+        /**
+         * Title and back button display
+         */
+        //final ImageView backButton = (ImageView) view.findViewById(R.id.iv_back_movie_details);
+        TextView activityTitlePortrait = (TextView) view.findViewById(R.id.toolbar_title_movie_details_portrait);
+        TextView activityTitleLandscape = (TextView) view.findViewById(R.id.toolbar_title_movie_details_landscape);
+
+        int orientation = getResources().getConfiguration().orientation;
+
+        // Display or hide the back button depending on the device orientation
+        if (getResources().getBoolean(R.bool.isTablet) && orientation == ORIENTATION_LANDSCAPE) {
+            backButton.setVisibility(View.INVISIBLE);
+            activityTitlePortrait.setVisibility(View.INVISIBLE);
+            activityTitleLandscape.setVisibility(View.VISIBLE);
+        } else if (getResources().getBoolean(R.bool.isTablet) && orientation == ORIENTATION_PORTRAIT) {
+            activityTitleLandscape.setVisibility(View.INVISIBLE);
+            backButton.setVisibility(View.VISIBLE);
+            activityTitlePortrait.setVisibility(View.VISIBLE);
+        }
 
         return view;
     }
@@ -285,22 +307,19 @@ public class MovieDetailsFragment extends Fragment implements
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        if (id == null) { // If no movie has already been selected, show an empty Detailed Activity, with a "no content" message
+            showNoContentMovieDetail();
+        } else { // If a movie was previously selected, show the movie data
         /* Once all of our views are setup, we can load the movie data. */
-        loadMovieDetailData();
-        loadVideosData();
-        loadReviewsData();
+            loadMovieDetailData();
+            loadVideosData();
+            loadReviewsData();
+        }
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-
-//        if (context instanceof OnItemSelectedListener) {
-//            listener = (OnItemSelectedListener) context;
-//        } else {
-//            throw new ClassCastException(context.toString()
-//                    + " must implement MyListFragment.OnItemSelectedListener");
-//        }
     }
 
     @Override
@@ -315,13 +334,29 @@ public class MovieDetailsFragment extends Fragment implements
     static Handler connectionHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            if (msg.what != 1) { // code if not connected
+            if (msg.what != 1) { // If not connected
                 mConnected = false;
-            } else { // code if connected
+            } else { // If connected
                 mConnected = true;
             }
         }
     };
+
+    /**
+     * This method will display an empty Detailed Movie activity with a message
+     */
+    private void showNoContentMovieDetail() {
+        mFavoritesButton.setVisibility(View.INVISIBLE);
+        mFavedButton.setVisibility(View.INVISIBLE);
+        mMovieTitle.setVisibility(View.INVISIBLE);
+        mDivider1.setVisibility(View.INVISIBLE);
+        mDivider2.setVisibility(View.INVISIBLE);
+        mDivider3.setVisibility(View.INVISIBLE);
+        mVideoTitle.setVisibility(View.INVISIBLE);
+        mReviewTitle.setVisibility(View.INVISIBLE);
+        showErrorMessage();
+        mDetailLayout.setVisibility(View.VISIBLE);
+    }
 
     /**
      * This method will tell some background method to get
@@ -330,7 +365,11 @@ public class MovieDetailsFragment extends Fragment implements
     private void loadMovieDetailData() {
         showMovieDataView();
 
-        new FetchMovieDetailTask().execute(id);
+        if (id != null) { // Check if a movie was previously selected
+            new FetchMovieDetailTask().execute(id);
+        } else {
+            showErrorMessage();
+        }
     }
 
     /**
@@ -339,7 +378,11 @@ public class MovieDetailsFragment extends Fragment implements
      */
     private void loadVideosData() {
 
-        new FetchVideosDetailTask().execute(id);
+        if (id != null) { // Check if a movie was previously selected
+            new FetchVideosDetailTask().execute(id);
+        } else {
+            showErrorMessage();
+        }
     }
 
     /**
@@ -348,7 +391,11 @@ public class MovieDetailsFragment extends Fragment implements
      */
     private void loadReviewsData() {
 
-        new FetchReviewsDetailTask().execute(id);
+        if (id != null) { // Check if a movie was previously selected
+            new FetchReviewsDetailTask().execute(id);
+        } else {
+            showErrorMessage();
+        }
     }
 
     /**
@@ -362,6 +409,7 @@ public class MovieDetailsFragment extends Fragment implements
         mDetailLayout.setVisibility(View.VISIBLE);
     }
 
+    // Show the favorite button already clicked
     private void showFavedButton() {
         // Hide the default Favorites button
         mFavoritesButton.setVisibility(View.INVISIBLE);
@@ -369,6 +417,7 @@ public class MovieDetailsFragment extends Fragment implements
         mFavedButton.setVisibility(View.VISIBLE);
     }
 
+    // Show the default favorite button
     private void showFavoritesButton() {
         // Hide the Faved button
         mFavedButton.setVisibility(View.INVISIBLE);
@@ -386,6 +435,8 @@ public class MovieDetailsFragment extends Fragment implements
         if (!mConnected) {
             mErrorMessageDisplay.setText(R.string.error_message_internet);
         } else if (mMovie == null) {
+            mErrorMessageDisplay.setText(R.string.error_message_no_movie_selected);
+        } else if (id == null) {
             mErrorMessageDisplay.setText(R.string.error_message_no_movie_selected);
         } else {
             mErrorMessageDisplay.setText(R.string.error_message_common);
@@ -558,7 +609,7 @@ public class MovieDetailsFragment extends Fragment implements
         @Override
         protected void onPostExecute(MovieArrays movieData) {
             mLoadingIndicator.setVisibility(View.INVISIBLE);
-            if (movieData != null) {
+            if (movieData != null && isAdded()) {
                 showMovieDataView();
 
                 Resources resources = getResources();
@@ -567,7 +618,7 @@ public class MovieDetailsFragment extends Fragment implements
 
                 // Display the movie poster & backdrop
                 Picasso.with(contextPoster).load(movieData.posterPath.get(0)).into(mMoviePoster);
-                Picasso.with(contextPoster).load(movieData.backdropPath.get(0)).into(mMovieBackdrop);
+                Picasso.with(contextBackdrop).load(movieData.backdropPath.get(0)).into(mMovieBackdrop);
                 // Display all the movie info
                 mMovieTitle.setText(movieData.title.get(0));
                 mMovieOriginalTitle.setText(String.format(resources.getString(R.string.movie_original_title), movieData.originalTitle.get(0)));
