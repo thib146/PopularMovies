@@ -1,5 +1,5 @@
 # PopularMovies
-PopularMovies is an Android app shows a real-time list of movies ranked by popularity or by ratings. Browse through the movies by selecting your filter (Most Popular or Top Rated) and click on any cover to get some details.
+PopularMovies is an Android app which shows a real-time list of movies ranked by popularity or by ratings. Browse through the movies by selecting your filter (Most Popular or Top Rated) and click on any cover to get some details.
 
 This app was made during a project with Udacity Android Nanodegree Program.
 
